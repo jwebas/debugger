@@ -8,7 +8,7 @@ Debugger requires PHP 7.1.3+.
 
 ## Usage
 
-Please see example/index.php(example/index.php) for details.
+Please see [example/index.php](example/index.php) for details.
 
 ### Links
 * Tracy PHP debugger - https://github.com/nette/tracy
