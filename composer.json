@@ -1,6 +1,6 @@
 {
     "name" : "jwebas/debugger",
-    "description" : "Debug",
+    "description" : "Slim Framework Tracy Debugger Bar",
     "license" : "MIT",
     "type" : "library",
     "minimum-stability" : "dev",
