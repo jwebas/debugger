@@ -1,5 +1,5 @@
 {
-    "name" : "jwebas/debug",
+    "name" : "jwebas/debugger",
     "description" : "Debug",
     "license" : "MIT",
     "type" : "library",
