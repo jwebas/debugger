@@ -45,7 +45,7 @@ abstract class DebuggerPanel implements IBarPanel
     {
         $options = [
             'truncate' => $truncate,
-            'location' => true,
+            'location' => 0,
         ];
 
         return Dumper::toHtml($item, $options);
