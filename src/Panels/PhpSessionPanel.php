@@ -32,7 +32,10 @@ class PhpSessionPanel extends DebuggerPanel
     public function getPanel(): string
     {
         $content = '<div class="tracy-inner">';
+
+        // Session data
         if (count($_SESSION)) {
+            $content .= '<span style="font-weight: bold;">Session Data</span>';
             $content .= $this->tableHeader(['Key', 'Value']);
             foreach ($_SESSION as $key => $item) {
                 $content .= '<tr>';
@@ -43,6 +46,46 @@ class PhpSessionPanel extends DebuggerPanel
             $content .= $this->tableFooter();
         }
 
+        // Session params
+        $sessionParams = [
+            'ID'                      => session_id(),
+            'Name'                    => session_name(),
+            'Cache Expire Time (min)' => session_cache_expire(),
+            'Cache Limiter'           => session_cache_limiter(),
+            'Save Path'               => session_save_path(),
+        ];
+
+        $content .= '<span style="font-weight: bold;">Session params</span>';
+        $content .= $this->tableHeader(['Key', 'Value']);
+        foreach ($sessionParams as $key => $item) {
+            $content .= '<tr>';
+            $content .= '<td>' . $key . '</td>';
+            $content .= '<td>' . $this->toHtml($item) . '</td>';
+            $content .= '</tr>';
+        }
+        $content .= $this->tableFooter();
+
+        // Cookie params
+        $cookies = session_get_cookie_params();
+        $cookieParams = [
+            'lifetime (s)' => $cookies['lifetime'],
+            'path'         => $cookies['path'],
+            'domain'       => $cookies['domain'],
+            'secure'       => $cookies['secure'],
+            'httponly'     => $cookies['httponly'],
+        ];
+
+        $content .= '<span style="font-weight: bold;">Cookie Params</span>';
+        $content .= $this->tableHeader(['Key', 'Value']);
+        foreach ($cookieParams as $key => $item) {
+            $content .= '<tr>';
+            $content .= '<td>' . $key . '</td>';
+            $content .= '<td>' . $this->toHtml($item) . '</td>';
+            $content .= '</tr>';
+        }
+        $content .= $this->tableFooter();
+
+        // Session dump
         $content .= '<div style="margin-top: 10px;">';
         $content .= $this->toHtml($_SESSION);
         $content .= '</div>';
@@ -57,18 +100,6 @@ class PhpSessionPanel extends DebuggerPanel
      */
     protected function getIcon(): string
     {
-        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px"
-                 width="16px" height="16px" viewBox="212.8 211.3 16 16" enable-background="new 212.8 211.3 16 16" xml:space="preserve">
-            <g>
-                <path d="M225.6,216c-0.1-0.3-0.3-0.6-0.5-0.8l-3.2-3.3c-0.2-0.2-0.4-0.4-0.8-0.5c-0.3-0.1-0.6-0.2-0.9-0.2h-6.5
-                    c-0.3,0-0.5,0.1-0.7,0.3c-0.2,0.2-0.3,0.4-0.3,0.7v14c0,0.3,0.1,0.5,0.3,0.7c0.2,0.2,0.4,0.3,0.7,0.3h11.1c0.3,0,0.5-0.1,0.7-0.3
-                    c0.2-0.2,0.3-0.4,0.3-0.7v-9.3C225.8,216.7,225.7,216.4,225.6,216z M220.6,212.7c0.2,0.1,0.3,0.1,0.4,0.2l3.2,3.3
-                    c0.1,0.1,0.2,0.2,0.2,0.4h-3.8V212.7z M224.5,225.9h-10.4v-13.3h5.2v4.3c0,0.3,0.1,0.5,0.3,0.7c0.2,0.2,0.4,0.3,0.7,0.3h4.2V225.9z" fill="#231F20"/>
-                <path d="M222.8,221.9h-7.2c-0.1,0-0.2,0-0.2,0.1c-0.1,0.1-0.1,0.1-0.1,0.2v0.7c0,0.1,0,0.2,0.1,0.2c0.1,0.1,0.1,0.1,0.2,0.1h7.2
-                    c0.1,0,0.2,0,0.2-0.1c0.1-0.1,0.1-0.1,0.1-0.2v-0.7c0-0.1,0-0.2-0.1-0.2C223,222,222.9,221.9,222.8,221.9z" fill="#231F20"/>
-                <path d="M215.5,219.4c-0.1,0.1-0.1,0.1-0.1,0.2v0.7c0,0.1,0,0.2,0.1,0.2c0.1,0.1,0.1,0.1,0.2,0.1h7.2c0.1,0,0.2,0,0.2-0.1
-                    c0.1-0.1,0.1-0.1,0.1-0.2v-0.7c0-0.1,0-0.2-0.1-0.2c-0.1-0.1-0.1-0.1-0.2-0.1h-7.2C215.6,219.3,215.5,219.3,215.5,219.4z" fill="#231F20"/>
-            </g>
-            </svg>';
+        return '<svg viewBox="0 0 2048 2048" width="16px" height="16px"><path fill="#c0392b" d="m1691 1396-67 394h-133s2-446 0-586v-4c0-109 89-197 200-197 110 0 200 88 200 197s-89 197-200 197zm-1131-192c-2 141 0 586 0 586h-133l-67-394h-1c-110 0-199-88-199-197s89-197 200-197c110 0 200 88 200 197v4zm865 61v394h-399-403v-394c262-27 529-27 802 0zm0-66c-273-27-541-27-802 0-2-163-119-258-266-262-176-545 233-693 669-693 440 0 841 149 665 693-148 4-265 99-266 263z"></path></svg>';
     }
 }
