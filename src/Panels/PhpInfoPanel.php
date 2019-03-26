@@ -2,14 +2,14 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
 use DOMDocument;
 use DOMElement;
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-class PhpInfoPanel extends DebuggerPanel
+class PhpInfoPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -23,7 +23,7 @@ class PhpInfoPanel extends DebuggerPanel
      */
     public function getTab(): string
     {
-        return '<span title="' . $this->title . '">' . $this->getIcon() . ' ' . PHP_VERSION . '</span>';
+        return '<span title="' . $this->title . '">' . $this->getIcon() . '</span>';
     }
 
     /**
@@ -34,50 +34,34 @@ class PhpInfoPanel extends DebuggerPanel
     public function getPanel(): string
     {
         ob_start();
+        require __DIR__ . '/templates/php_info.panel.phtml';
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getData(): string
+    {
+        ob_start();
         phpinfo();
         $phpInfo = ob_get_clean();
 
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
-        if (\function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             $dom->loadHTML(mb_convert_encoding($phpInfo, 'HTML-ENTITIES', 'UTF-8'));
         } else {
             $dom->loadHTML(htmlspecialchars_decode(utf8_decode(htmlentities($phpInfo, ENT_COMPAT, 'UTF-8', false))));
         }
         libxml_use_internal_errors();
+
+        /** @var DOMElement $body */
         $body = $dom->getElementsByTagName('body')->item(0);
         $this->removeElementsByTagName('img', $body);
-        $phpInfo = $dom->saveHTML($body);
 
-        // Load all the panel sections
-        $out = '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>
-        <div class="tracy-inner">
-            <style type="text/css">
-                #phpinfoBody pre {margin: 0; font-family: monospace;}
-                #phpinfoBody a:link {color: #009; text-decoration: none; background-color: #fff;}
-                #phpinfoBody a:hover {text-decoration: underline;}
-                #phpinfoBody table {border-collapse: collapse; border: 0; box-shadow: 1px 2px 3px #ccc;}
-                #phpinfoBody .center {text-align: center;}
-                #phpinfoBody .center table {margin: 1em auto; text-align: left; width:100% !important;}
-                #phpinfoBody .center th {text-align: center !important;}
-                #phpinfoBody td, th {border: 1px solid #666; font-size: 100%; vertical-align: baseline; padding: 4px 5px;}
-                #phpinfoBody h1 {font-size: 175%;}
-                #phpinfoBody h2 {font-size: 150%;}
-                #phpinfoBody .p {text-align: left;}
-                #phpinfoBody .e {background-color: #ccf !important; width: 300px; font-weight: bold; }
-                #phpinfoBody .h th {background-color: #99c !important; font-weight: bold; }
-                #phpinfoBody .v {background-color: #ddd !important; max-width: 300px;}
-                #phpinfoBody .v i {color: #999 !important; }
-                #phpinfoBody img {float: right; border: 0;}
-                #phpinfoBody hr {background-color: #ccc; border: 0; height: 1px;}
-                #phpinfoBody td {border: 1px solid #000 !important;}
-                #phpinfoBody th {border: 1px solid #000 !important; color:#000 !important;}
-            </style>
-            <div id="phpinfoBody">' . $phpInfo . '</div>';
-
-        $out .= '</div>';
-
-        return $out;
+        return $dom->saveHTML($body);
     }
 
     /**

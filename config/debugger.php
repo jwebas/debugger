@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 return [
@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'debug' => true,
+    'debug' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -160,6 +160,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Custom static error template
+    |--------------------------------------------------------------------------
+    |
+    | @var string
+    |
+    */
+
+    'errorTemplate' => '',
+
+    /*
+    |--------------------------------------------------------------------------
     | Custom css files
     |--------------------------------------------------------------------------
     |
@@ -167,7 +178,9 @@ return [
     |
     */
 
-    'customCssFiles' => [],
+    'customCssFiles' => [
+        __DIR__ . '/../resources/css/tracy.css',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -191,60 +204,64 @@ return [
 
     'panels' => [
 
-        // Panels that requires Psr\Container\ContainerInterface
-        'container'     => [
-            'config' => [
-                'enabled' => true,
-                'title'   => 'Config',
-            ],
-            
-            'eloquentOrm' => [
-                'enabled' => true,
-                'title'   => 'Eloquent ORM (database)',
-            ],
-
-            'slimContainer' => [
-                'enabled' => true,
-                'title'   => 'Slim Container',
-            ],
-
-            'slimEnvironment' => [
-                'enabled' => true,
-                'title'   => 'Slim Http Environment',
-            ],
-
-            'slimRequest' => [
-                'enabled' => true,
-                'title'   => 'Slim Http Request',
-            ],
-
-            'slimResponse' => [
-                'enabled' => true,
-                'title'   => 'Slim Http Response',
-            ],
-
-            'slimRouter' => [
-                'enabled' => true,
-                'title'   => 'Slim Router',
-            ],
-
-            'twig' => [
-                'enabled' => true,
-                'title'   => 'Twig',
-            ],
+        'jwebasConfig' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\ConfigPanel::class,
+            'title'   => 'Config',
         ],
 
-        // Panels that NOT requires Psr\Container\ContainerInterface
-        'non_container' => [
-            'phpInfo' => [
-                'enabled' => true,
-                'title'   => 'Php Info',
-            ],
+        'container' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\ContainerPanel::class,
+            'title'   => 'Container',
+        ],
 
-            'phpSession' => [
-                'enabled' => true,
-                'title'   => 'PHP Session',
-            ],
+        'eloquentOrm' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
+            'title'   => 'Eloquent ORM (database)',
+        ],
+
+        'slimRouter' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\SlimRouterPanel::class,
+            'title'   => 'Slim Router',
+        ],
+
+        'slimRequest' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\SlimRequestPanel::class,
+            'title'   => 'Slim Http Request',
+        ],
+
+        'slimResponse' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\SlimResponsePanel::class,
+            'title'   => 'Slim Http Response',
+        ],
+
+        'slimEnvironment' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\SlimEnvironmentPanel::class,
+            'title'   => 'Slim Http Environment',
+        ],
+
+        'twig' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\TwigPanel::class,
+            'title'   => 'Twig Templates Engine',
+        ],
+
+        'phpSession' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\PhpSessionPanel::class,
+            'title'   => 'PHP Session',
+        ],
+
+        'phpInfo' => [
+            'enabled' => true,
+            'class'   => \Jwebas\Debugger\Panels\PhpInfoPanel::class,
+            'title'   => 'Php Info',
         ],
     ],
 ];

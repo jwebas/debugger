@@ -1,0 +1,53 @@
+<?php
+
+use Jwebas\Debugger\Panels\TwigPanel;
+
+/** @var TwigPanel $this */
+
+?>
+
+<style class="tracy-debug">
+    .tracy-TwigPanel table.tracy-table .e {
+        width : 120px;
+    }
+
+    .tracy-TwigPanel table.tracy-table .v {
+        max-width : 500px;
+    }
+</style>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+
+<div class="tracy-inner tracy-TwigPanel">
+    <div class="tracy-inner-container">
+
+        <span style="font-weight: bold;">Extensions</span>
+
+        <table class="tracy-table tracy-sortable">
+            <thead>
+            <tr>
+                <th>Extension</th>
+                <th>Data</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getData()['extensions'] as $title => $value): ?>
+                <tr>
+                    <td class="e"><?= $title ?></td>
+                    <td class="v"><?= $this->toHtml($value) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <span style="font-weight: bold;">Twig Loader</span>
+        <div style="margin-bottom: 15px;"><?= $this->toHtml($this->getData()['loader']) ?></div>
+
+        <span style="font-weight: bold;">Twig</span>
+        <div style="margin-bottom: 15px;"><?= $this->toHtml($this->getData()['full']) ?></div>
+
+        <span style="font-weight: bold;">Twig Profile</span>
+        <div><?= $this->toHtml($this->getData()['twigProfile']) ?></div>
+
+    </div>
+</div>

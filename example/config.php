@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 return [
     'settings' => [
@@ -27,6 +26,9 @@ return [
             ],
         ],
 
-        'debugger' => include __DIR__ . '/../config/debugger.php',
+        'debugger' => [
+            'debug'        => true,
+            'logDirectory' => __DIR__ . '/logs',
+        ],
     ],
 ];

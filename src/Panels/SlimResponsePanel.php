@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 use Slim\Http\Response;
 
-class SlimResponsePanel extends DebuggerPanel
+class SlimResponsePanel extends AbstractPanel
 {
     /**
      * @var string
@@ -32,34 +32,48 @@ class SlimResponsePanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
+        ob_start();
+        if (class_exists(Response::class)) {
+            require __DIR__ . '/templates/slim_response.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Slim\Http\Response not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
         /** @var Response $slimResponse */
         $slimResponse = $this->container->get('response');
 
-        $items = [
-            'status'          => $slimResponse->getStatusCode(),
-            'reasonPhrase'    => $slimResponse->getReasonPhrase(),
-            'protocolVersion' => $slimResponse->getProtocolVersion(),
-            'headers'         => $slimResponse->getHeaders(),
-            'body'            => $slimResponse->getBody(),
+        return [
+            'items' => [
+                'Status Code'      => $slimResponse->getStatusCode(),
+                'Reason Phrase'    => $slimResponse->getReasonPhrase(),
+                'Status'           => [
+                    'Is Empty'         => $slimResponse->isEmpty(),
+                    'Is Informational' => $slimResponse->isInformational(),
+                    'Is OK'            => $slimResponse->isOk(),
+                    'Is Successful'    => $slimResponse->isSuccessful(),
+                    'Is Redirect'      => $slimResponse->isRedirect(),
+                    'Is Redirection'   => $slimResponse->isRedirection(),
+                    'Is Forbidden'     => $slimResponse->isForbidden(),
+                    'Is NotFound'      => $slimResponse->isNotFound(),
+                    'Is Client Error'  => $slimResponse->isClientError(),
+                    'Is Server Error'  => $slimResponse->isServerError(),
+                ],
+                'Protocol Version' => $slimResponse->getProtocolVersion(),
+                'Headers'          => $slimResponse->getHeaders(),
+                'Body'             => $slimResponse->getBody(),
+            ],
+            'full'  => $slimResponse,
         ];
-
-        $content = '<div class="tracy-inner">';
-        $content .= $this->tableHeader(['Key', 'Value']);
-        foreach ($items as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
-        }
-        $content .= $this->tableFooter();
-
-        $content .= '<div style="margin-top: 10px;">';
-        $content .= $this->toHtml($slimResponse);
-        $content .= '</div>';
-
-        $content .= '</div>';
-
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
     }
 
     /**

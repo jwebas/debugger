@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 use Slim\Http\Request;
 
-class SlimRequestPanel extends DebuggerPanel
+class SlimRequestPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -32,42 +32,50 @@ class SlimRequestPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
+        ob_start();
+        if (class_exists(Request::class)) {
+            require __DIR__ . '/templates/slim_request.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Slim\Http\Request not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
         /** @var Request $slimRequest */
         $slimRequest = $this->container->get('request');
 
-        $items = [
-            'method'          => $slimRequest->getMethod(),
-            'originalMethod'  => $slimRequest->getOriginalMethod(),
-            'uri'             => $slimRequest->getUri(),
-            'requestTarget'   => $slimRequest->getRequestTarget(),
-            'queryParams'     => $slimRequest->getQueryParams(),
-            'cookies'         => $slimRequest->getCookieParams(),
-            'serverParams'    => $slimRequest->getServerParams(),
-            'attributes'      => $slimRequest->getAttributes(),
-            'bodyParsed'      => $slimRequest->getParsedBody(),
-            'uploadedFiles'   => $slimRequest->getUploadedFiles(),
-            'protocolVersion' => $slimRequest->getProtocolVersion(),
-            'headers'         => $slimRequest->getHeaders(),
-            'body'            => $slimRequest->getBody(),
+        return [
+            'items' => [
+                'Method'            => $slimRequest->getMethod(),
+                'Original Method'   => $slimRequest->getOriginalMethod(),
+                'Is Xhr (Ajax)'     => $slimRequest->isXhr(),
+                'Request Target'    => $slimRequest->getRequestTarget(),
+                'Uri'               => $slimRequest->getUri(),
+                'Content Type'      => $slimRequest->getContentType(),
+                'Media Type'        => $slimRequest->getMediaType(),
+                'Media Type Params' => $slimRequest->getMediaTypeParams(),
+                'Content Charset'   => $slimRequest->getContentCharset(),
+                'Content Length'    => $slimRequest->getContentLength(),
+                'Cookie Params'     => $slimRequest->getCookieParams(),
+                'Query Params'      => $slimRequest->getQueryParams(),
+                'Uploaded Files'    => $slimRequest->getUploadedFiles(),
+                'Server Params'     => $slimRequest->getServerParams(),
+                'Attributes'        => $slimRequest->getAttributes(),
+                'Parsed Body'       => $slimRequest->getParsedBody(),
+                'Protocol Version'  => $slimRequest->getProtocolVersion(),
+                'Headers'           => $slimRequest->getHeaders(),
+                'Body'              => $slimRequest->getBody(),
+            ],
+            'full'  => $slimRequest,
         ];
-
-        $content = '<div class="tracy-inner">';
-        $content .= $this->tableHeader(['Key', 'Value']);
-        foreach ($items as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
-        }
-        $content .= $this->tableFooter();
-
-        $content .= '<div>';
-        $content .= $this->toHtml($slimRequest);
-        $content .= '</div>';
-
-        $content .= '</div>';
-
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
     }
 
     /**

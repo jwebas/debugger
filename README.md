@@ -1,4 +1,4 @@
-# Debugger
+# Jwebas Debugger
 
 # Slim Framework Tracy Debugger Bar
 

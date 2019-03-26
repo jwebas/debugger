@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-class SlimContainerPanel extends DebuggerPanel
+class ContainerPanel extends AbstractPanel
 {
     /**
      * @var string
      */
-    protected $title = 'Slim Container';
+    protected $title = 'Container';
 
     /**
      * Renders HTML code for custom tab.
@@ -31,14 +31,26 @@ class SlimContainerPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        $content = '';
+        ob_start();
+        if (null !== $this->container) {
+            require __DIR__ . '/templates/container.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Container not defined';
+            require __DIR__ . '/templates/not_found.panel.phtml';
+        }
 
-        $content .= '<div>';
-        $content .= $this->toHtml($this->container);
-        $content .= '</div>';
-        $content .= '</div>';
+        return ob_get_clean();
+    }
 
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return [
+            'full' => $this->container,
+        ];
     }
 
     /**

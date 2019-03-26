@@ -2,12 +2,13 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Slim\Http\Environment;
 
-class SlimEnvironmentPanel extends DebuggerPanel
+class SlimEnvironmentPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -31,20 +32,24 @@ class SlimEnvironmentPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        $items = $this->container->get('environment');
-
-        $content = '<div class="tracy-inner">';
-        $content .= $this->tableHeader(['Key', 'Value']);
-        foreach ($items as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
+        ob_start();
+        if (class_exists(Environment::class)) {
+            require __DIR__ . '/templates/slim_environment.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Slim\Http\Environment not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
         }
-        $content .= $this->tableFooter();
-        $content .= '</div>';
 
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
+        return ob_get_clean();
+    }
+
+    /**
+     * @return Environment
+     */
+    protected function getData(): Environment
+    {
+        return $this->container->get('environment');
     }
 
     /**
@@ -52,8 +57,8 @@ class SlimEnvironmentPanel extends DebuggerPanel
      */
     protected function getIcon(): string
     {
-        return '<svg enable-background="new 0 0 32 32" height="32px" version="1.1" viewBox="0 0 32 32" ' .
-            'width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path fill="#239626" d="M29.7,' .
+        return '<svg enable-background="new 0 0 32 32" height="16px" version="1.1" viewBox="0 0 32 32" ' .
+            'width="16px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path fill="#239626" d="M29.7,' .
             '2.767C29.593,2.317,29.189,2,28.728,2c-0.002,0-0.004,0-0.006,0c-5.267,0.033-18.075,0.916-23.246,8.38  ' .
             'c-2.686,3.878-2.917,8.913-0.687,14.965c0.017,0.047,0.052,0.079,0.075,0.122C4.067,27.44,3.758,28.753,' .
             '3.75,28.79 c-0.116,0.54,0.229,1.072,0.769,1.188C4.589,29.993,4.659,30,4.729,30c0.461,0,0.876-0.321,' .

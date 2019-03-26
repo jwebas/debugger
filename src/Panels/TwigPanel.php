@@ -2,18 +2,20 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 use Slim\Views\Twig;
+use Twig\Profiler\Profile;
 
-class TwigPanel extends DebuggerPanel
+class TwigPanel extends AbstractPanel
 {
     /**
      * @var string
      */
-    protected $title = 'Twig';
+    protected $title = 'Twig Templates Engine';
+
 
     /**
      * Renders HTML code for custom tab.
@@ -22,10 +24,8 @@ class TwigPanel extends DebuggerPanel
      */
     public function getTab(): string
     {
-        $data = $this->getData();
-        $content = $this->getIcon() . ' ' . $data['time'];
 
-        return '<span title="' . $this->title . '">' . $content . '</span>';
+        return '<span title="' . $this->title . '">' . $this->getIcon() . ' ' . $this->getData()['time'] . '</span>';
     }
 
     /**
@@ -35,40 +35,16 @@ class TwigPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        /** @var \Twig_Profiler_Profile $twigProfile */
-        $twigProfile = $this->getData()['twigProfile'];
-
-        /** @var Twig $twig */
-        $twig = $this->container->get('view');
-        $extensions = $twig->getEnvironment()->getExtensions();
-
-        $content = '<div class="tracy-inner">';
-
-        $content .= $this->tableHeader(['Extension', 'Data']);
-        foreach ($extensions as $key => $extension) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($extension) . '</td>';
-            $content .= '</tr>';
+        ob_start();
+        if (class_exists(Twig::class) && class_exists(Profile::class)) {
+            require __DIR__ . '/templates/twig.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Slim\Views\Twig or Twig\Profiler\Profile not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
         }
-        $content .= $this->tableFooter();
 
-        $content .= $this->tableHeader(['Twig']);
-        $content .= '<tr>';
-        $content .= '<td>' . $this->toHtml($twig) . '</td>';
-        $content .= '</tr>';
-        $content .= $this->tableFooter();
-
-
-        $content .= $this->tableHeader(['Twig profiler result']);
-        $content .= '<tr>';
-        $content .= '<td>' . $this->toHtml($twigProfile) . '</td>';
-        $content .= '</tr>';
-        $content .= $this->tableFooter();
-
-        $content .= '</div>';
-
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
+        return ob_get_clean();
     }
 
     /**
@@ -76,12 +52,18 @@ class TwigPanel extends DebuggerPanel
      */
     protected function getData(): array
     {
-        /** @var \Twig_Profiler_Profile $twigProfile */
+        /** @var Profile $twigProfile */
         $twigProfile = $this->container->get('twigProfile');
+
+        /** @var Twig $twig */
+        $twig = $this->container->get('twig');
 
         return [
             'twigProfile' => $twigProfile,
             'time'        => sprintf('%.2f ms', $twigProfile->getDuration() * 1000),
+            'extensions'  => $twig->getEnvironment()->getExtensions(),
+            'loader'      => $twig->getLoader(),
+            'full'        => $twig,
         ];
     }
 

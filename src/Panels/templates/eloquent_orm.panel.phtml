@@ -1,0 +1,44 @@
+<?php
+
+use Jwebas\Debugger\Panels\EloquentOrmPanel;
+
+/** @var EloquentOrmPanel $this */
+
+$data = $this->getInfo();
+
+?>
+
+<!--suppress CssUnusedSymbol -->
+<style class="tracy-debug">
+    .tracy-EloquentOrm table.tracy-table .e {
+        width : 100px;
+    }
+
+    .tracy-EloquentOrm table.tracy-table .v {
+        width : 100px;
+    }
+
+    .tracy-EloquentOrm table.tracy-table .u {
+        max-width : 560px;
+    }
+</style>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?> <?= $data['count'] ?>/<?= $data['time'] ?></h1>
+
+<div class="tracy-inner tracy-EloquentOrm">
+    <div class="tracy-inner-container">
+
+        <table class="tracy-table tracy-sortable">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>Time, ms</th>
+                <th>Query / Bindings</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?= $data['content'] ?>
+            </tbody>
+        </table>
+    </div>
+</div>

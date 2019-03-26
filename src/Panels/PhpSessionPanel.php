@@ -2,12 +2,12 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-class PhpSessionPanel extends DebuggerPanel
+class PhpSessionPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -31,68 +31,45 @@ class PhpSessionPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        $content = '<div class="tracy-inner">';
+        ob_start();
+        require __DIR__ . '/templates/php_session.panel.phtml';
 
-        // Session data
-        if (count($_SESSION)) {
-            $content .= '<span style="font-weight: bold;">Session Data</span>';
-            $content .= $this->tableHeader(['Key', 'Value']);
-            foreach ($_SESSION as $key => $item) {
-                $content .= '<tr>';
-                $content .= '<td>' . $key . '</td>';
-                $content .= '<td>' . $this->toHtml($item) . '</td>';
-                $content .= '</tr>';
-            }
-            $content .= $this->tableFooter();
-        }
+        return ob_get_clean();
+    }
 
-        // Session params
-        $sessionParams = [
-            'ID'                      => session_id(),
-            'Name'                    => session_name(),
-            'Cache Expire Time (min)' => session_cache_expire(),
-            'Cache Limiter'           => session_cache_limiter(),
-            'Save Path'               => session_save_path(),
-        ];
-
-        $content .= '<span style="font-weight: bold;">Session params</span>';
-        $content .= $this->tableHeader(['Key', 'Value']);
-        foreach ($sessionParams as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
-        }
-        $content .= $this->tableFooter();
-
-        // Cookie params
+    /**
+     * @return array
+     */
+    protected function getData(): array
+    {
         $cookies = session_get_cookie_params();
-        $cookieParams = [
-            'lifetime (s)' => $cookies['lifetime'],
-            'path'         => $cookies['path'],
-            'domain'       => $cookies['domain'],
-            'secure'       => $cookies['secure'],
-            'httponly'     => $cookies['httponly'],
+
+        return [
+            'session'        => [
+                'title'  => 'Session',
+                'values' => $_SESSION,
+            ],
+            'session_params' => [
+                'title'  => 'Session params',
+                'values' => [
+                    'ID'                      => session_id(),
+                    'Name'                    => session_name(),
+                    'Cache Expire Time (min)' => session_cache_expire(),
+                    'Cache Limiter'           => session_cache_limiter(),
+                    'Save Path'               => session_save_path(),
+                ],
+            ],
+            'cookie_params'  => [
+                'title'  => 'Cookie Params',
+                'values' => [
+                    'lifetime (s)' => $cookies['lifetime'],
+                    'path'         => $cookies['path'],
+                    'domain'       => $cookies['domain'],
+                    'secure'       => $cookies['secure'],
+                    'httponly'     => $cookies['httponly'],
+                ],
+            ],
         ];
-
-        $content .= '<span style="font-weight: bold;">Cookie Params</span>';
-        $content .= $this->tableHeader(['Key', 'Value']);
-        foreach ($cookieParams as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
-        }
-        $content .= $this->tableFooter();
-
-        // Session dump
-        $content .= '<div style="margin-top: 10px;">';
-        $content .= $this->toHtml($_SESSION);
-        $content .= '</div>';
-
-        $content .= '</div>';
-
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
     }
 
     /**

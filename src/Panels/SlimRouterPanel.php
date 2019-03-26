@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\DebuggerPanel;
-use Slim\Route;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Slim\Router;
 
-class SlimRouterPanel extends DebuggerPanel
+class SlimRouterPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -32,34 +32,33 @@ class SlimRouterPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        /** @var Route $route */
-
-        $router = $this->container->get('router');
-        $routes = $router->getRoutes();
-
-        $content = '<div class="tracy-inner">';
-
-        if (count($routes)) {
-            $content .= $this->tableHeader(['ID', 'Name', 'Pattern', 'Methods', 'Callable', 'Middlewares', 'Arguments']);
-            foreach ($routes as $route) {
-                $content .= '<tr>';
-                $content .= '<td>' . $route->getIdentifier() . '</td>';
-                $content .= '<td>' . $route->getName() . '</td>';
-                $content .= '<td>' . $route->getPattern() . '</td>';
-                $content .= '<td>' . implode(', ', $route->getMethods()) . '</td>';
-                $content .= '<td>' . $this->toHtml($route->getCallable()) . '</td>';
-                $content .= '<td>' . $this->toHtml($route->getMiddleware()) . '</td>';
-                $content .= '<td>' . $this->toHtml($route->getArguments()) . '</td>';
-                $content .= '</tr>';
-            }
-            $content .= $this->tableFooter();
+        ob_start();
+        if (class_exists(Router::class)) {
+            require __DIR__ . '/templates/slim_router.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Slim\Router not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
         }
 
-        $content .= $this->toHtml($router);
-        $content .= '</div>';
-        $content .= '</div>';
+        return ob_get_clean();
+    }
 
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        /** @var Router $slimRouter */
+        $slimRouter = $this->container->get('router');
+
+        return [
+            'items'  => [
+                'Base Path' => $slimRouter->getBasePath(),
+            ],
+            'routes' => $slimRouter->getRoutes(),
+            'full'   => $slimRouter,
+        ];
     }
 
     /**

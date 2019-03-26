@@ -1,0 +1,17 @@
+<?php
+
+use Jwebas\Debugger\Panels\ContainerPanel;
+
+/** @var ContainerPanel $this */
+
+?>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+
+<div class="tracy-inner tracy-SlimContainer">
+    <div class="tracy-inner-container">
+
+        <div><?= $this->toHtml($this->getData()['full']) ?></div>
+
+    </div>
+</div>

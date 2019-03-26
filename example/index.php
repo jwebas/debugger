@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-use Jwb\Debugger;
+use Jwebas\Debugger\Debugger;
+use Slim\App;
 
 /**
  * Step 1: Require the Slim Framework using Composer's autoloader
@@ -24,7 +23,7 @@ Debugger::run($config['settings']['debugger']);
  * Step 3: Init Slim application
  */
 
-$app = new \Slim\App($config);
+$app = new App($config);
 
 /**
  * Step 4: Get container from Slim application
@@ -45,11 +44,10 @@ unset($container['phpErrorHandler'], $container['errorHandler']);
 require __DIR__ . '/dependencies.php';
 
 /**
- * Step 7: Enable Debugger panels or add middleware
+ * Step 7: Enable Debugger panels
  */
 
-//Debugger::addPanels($config['settings']['debugger'], $container);
-$app->add(new \Jwb\DebuggerMiddleware($container));
+Debugger::addPanels($config['settings']['debugger'], $container);
 
 /**
  * Step 8: Run Slim application

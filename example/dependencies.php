@@ -1,20 +1,25 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Jwebas\Config\Config;
+use Jwebas\Config\Loaders\DirectoryLoader;
 use Psr\Container\ContainerInterface;
+use Slim\Http\Environment;
+use Slim\Http\Uri;
+use Slim\Views\Twig;
+use Slim\Views\TwigExtension;
+use Twig\Profiler\Profile;
 
 // Config
+$container['config'] = static function (): Config {
+    $configLoader = new DirectoryLoader();
 
-$container['config'] = function () {
-    $configLoader = new \Jwb\ConfigLoader();
-
-    return $configLoader->load(__DIR__ . '/../config');
+    return $configLoader->load(__DIR__, 'config.php');
 };
 
 // Illuminate database
-
-$container['database'] = function (ContainerInterface $c) {
-    $capsule = new \Illuminate\Database\Capsule\Manager;
+$container['db'] = static function (ContainerInterface $c): Capsule {
+    $capsule = new Capsule;
     $capsule->addConnection($c->get('settings')['db']);
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
@@ -22,23 +27,22 @@ $container['database'] = function (ContainerInterface $c) {
 
     return $capsule;
 };
-$capsule = $container['database'];
+$capsule = $container['db'];
 
 // Twig template engine
-
-$container['twigProfile'] = function () {
-    return new Twig_Profiler_Profile();
+$container['twigProfile'] = static function () {
+    return new Profile();
 };
 
-$container['view'] = function (ContainerInterface $c) {
+$container['twig'] = static function (ContainerInterface $c): Twig {
 
     $settings = $c->get('settings')['view'];
 
-    $view = new \Slim\Views\Twig($settings['template_path'], $settings['twig']);
+    $view = new Twig($settings['template_path'], $settings['twig']);
 
     $router = $c->get('router');
-    $uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
-    $view->addExtension(new \Slim\Views\TwigExtension($router, $uri));
+    $uri = Uri::createFromEnvironment(new Environment($_SERVER));
+    $view->addExtension(new TwigExtension($router, $uri));
 
     return $view;
 };

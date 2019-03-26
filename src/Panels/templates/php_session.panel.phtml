@@ -1,0 +1,48 @@
+<?php
+
+use Jwebas\Debugger\Panels\PhpSessionPanel;
+
+/** @var PhpSessionPanel $this */
+
+?>
+
+<style class="tracy-debug">
+    .tracy-PhpSessionPanel table.tracy-table .e {
+        width : 160px;
+    }
+
+    .tracy-PhpSessionPanel table.tracy-table .v {
+        max-width : 400px;
+    }
+</style>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+
+<div class="tracy-inner tracy-PhpSessionPanel">
+    <div class="tracy-inner-container">
+        <?php foreach ($this->getData() as $key => $datum): ?>
+
+            <span style="font-weight: bold;">
+                <?= $datum['title'] ?>
+            </span>
+
+            <table class="tracy-table tracy-sortable tracy-table-<?= $key; ?>">
+                <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($datum['values'] as $title => $value): ?>
+                    <tr>
+                        <td class="e"><?= $title ?></td>
+                        <td class="v"><?= $this->toHtml($value) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        <?php endforeach; ?>
+    </div>
+</div>

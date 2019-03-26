@@ -1,0 +1,68 @@
+#tracy-debug-bar {
+    font          : normal normal 13px/1.55 Arial, sans-serif !important;
+    background    : #f0f3f7 !important;
+    border-radius : 0 !important;
+    box-shadow    : none !important;
+    opacity       : 1 !important;
+    padding       : 1px 0 1px 0 !important;
+}
+
+#tracy-debug h1 {
+    max-width      : 100% !important;
+    padding-right  : 35px !important;
+    color          : #444444 !important;
+    text-transform : none !important;
+    user-select    : none;
+}
+
+#tracy-debug [id^="tracy-debug-panel-"][class*="tracy-mode-"] > h1 {
+    padding-top    : 5px !important;
+    padding-bottom : 5px !important;
+    font-size      : 15px;
+    text-transform : uppercase;
+    border-bottom  : 1px solid #f5f4f2 !important;
+}
+
+#tracy-debug [id^="tracy-debug-panel-"][class*="tracy-mode-"] > h1 > svg,
+#tracy-debug [id^="tracy-debug-panel-"][class*="tracy-mode-"] > h1 > a > svg {
+    display        : inline-block;
+    vertical-align : text-bottom;
+    margin-right   : 2px;
+    position       : relative;
+    top            : -1px;
+}
+
+#tracy-debug .tracy-panel.tracy-mode-rollup h1 {
+    border-bottom : none !important;
+    border-right  : 1rem solid transparent;
+}
+
+#tracy-debug .tracy-panel.tracy-mode-rollup h1 a {
+    pointer-events : none;
+}
+
+#tracy-debug .tracy-mode-float h1:hover {
+    cursor : grab !important;
+}
+
+#tracy-debug .tracy-mode-float h1:hover:active {
+    cursor : grabbing !important;
+}
+
+.tracy-panel table.tracy-table {
+    border-collapse : collapse;
+    margin-bottom   : 15px !important;
+    width           : 100% !important;
+}
+
+.tracy-panel table.tracy-table tr td:nth-child(2) {
+    overflow : auto;
+}
+
+.tracy-panel table.tracy-table tr td:first-child {
+    font-weight : bold !important;
+}
+
+#tracy-debug-bar ul li {
+    padding : 0 1px;
+}

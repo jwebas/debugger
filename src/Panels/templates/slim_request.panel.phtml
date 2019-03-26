@@ -1,0 +1,44 @@
+<?php
+
+use Jwebas\Debugger\Panels\SlimRequestPanel;
+
+/** @var SlimRequestPanel $this */
+
+?>
+
+<style class="tracy-debug">
+    .tracy-SlimRequestPanel table.tracy-table .e {
+        width : 160px;
+    }
+
+    .tracy-SlimRequestPanel table.tracy-table .v {
+        max-width : 500px;
+    }
+</style>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+
+<div class="tracy-inner tracy-SlimRequestPanel">
+    <div class="tracy-inner-container">
+
+        <table class="tracy-table tracy-sortable">
+            <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getData()['items'] as $title => $value): ?>
+                <tr>
+                    <td class="e"><?= $title ?></td>
+                    <td class="v"><?= $this->toHtml($value) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <div><?= $this->toHtml($this->getData()['full']) ?></div>
+
+    </div>
+</div>

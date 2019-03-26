@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Panels;
+namespace Jwebas\Debugger\Panels;
 
 
-use Jwb\Config;
-use Jwb\DebuggerPanel;
+use Jwebas\Config\Config;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-class ConfigPanel extends DebuggerPanel
+class ConfigPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -16,7 +16,9 @@ class ConfigPanel extends DebuggerPanel
     protected $title = 'Config';
 
     /**
-     * @inheritdoc
+     * Renders HTML code for custom tab.
+     *
+     * @return string
      */
     public function getTab(): string
     {
@@ -30,21 +32,26 @@ class ConfigPanel extends DebuggerPanel
      */
     public function getPanel(): string
     {
-        /** @var Config $config */
+        ob_start();
+        if (class_exists(Config::class)) {
+            require __DIR__ . '/templates/config.panel.phtml';
+        } else {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $msg = 'Class Jwebas\Config\Config not found';
+            require __DIR__ . '/templates/not_found.panel.phtml';
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getData(): array
+    {
         $config = $this->container->get('config');
 
-        $content = '<div class="tracy-inner">';
-        $content .= $this->tableHeader(['Key', 'Values']);
-        foreach ($config->all() as $key => $item) {
-            $content .= '<tr>';
-            $content .= '<td>' . $key . '</td>';
-            $content .= '<td>' . $this->toHtml($item) . '</td>';
-            $content .= '</tr>';
-        }
-        $content .= $this->tableFooter();
-        $content .= '</div>';
-
-        return '<h1>' . $this->getIcon() . ' ' . $this->title . '</h1>' . $content;
+        return $config->all();
     }
 
     /**

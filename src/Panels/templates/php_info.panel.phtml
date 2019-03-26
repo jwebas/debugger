@@ -1,0 +1,113 @@
+<?php
+
+use Jwebas\Debugger\Panels\PhpInfoPanel;
+
+/** @var PhpInfoPanel $this */
+
+?>
+
+<!--suppress CssUnusedSymbol -->
+<style class="tracy-debug">
+    #phpinfoBody pre {
+        margin      : 0;
+        font-family : monospace;
+    }
+
+    #phpinfoBody a:link {
+        color            : #009;
+        text-decoration  : none;
+        background-color : #fff;
+    }
+
+    #phpinfoBody a:hover {
+        text-decoration : underline;
+    }
+
+    #phpinfoBody table {
+        border-collapse : collapse;
+        border          : 0;
+        box-shadow      : 1px 2px 3px #ccc;
+    }
+
+    #phpinfoBody .center {
+        text-align : center;
+    }
+
+    #phpinfoBody .center table {
+        margin     : 1em auto;
+        text-align : left;
+        width      : 100% !important;
+    }
+
+    #phpinfoBody .center th {
+        text-align : center !important;
+    }
+
+    #phpinfoBody td, th {
+        border         : 1px solid #666;
+        font-size      : 100%;
+        vertical-align : baseline;
+        padding        : 4px 5px;
+    }
+
+    #phpinfoBody h1 {
+        font-size : 175%;
+    }
+
+    #phpinfoBody h2 {
+        font-size : 150%;
+    }
+
+    #phpinfoBody .p {
+        text-align : left;
+    }
+
+    #phpinfoBody .e {
+        background-color : #ccf !important;
+        width            : 300px;
+        font-weight      : bold;
+    }
+
+    #phpinfoBody .h th {
+        background-color : #99c !important;
+        font-weight      : bold;
+    }
+
+    #phpinfoBody .v {
+        background-color : #ddd !important;
+        max-width        : 300px;
+    }
+
+    #phpinfoBody .v i {
+        color : #999 !important;
+    }
+
+    #phpinfoBody img {
+        float  : right;
+        border : 0;
+    }
+
+    #phpinfoBody hr {
+        background-color : #ccc;
+        border           : 0;
+        height           : 1px;
+    }
+
+    #phpinfoBody td {
+        border   : 1px solid #000 !important;
+        overflow : auto;
+    }
+
+    #phpinfoBody th {
+        border : 1px solid #000 !important;
+        color  : #000 !important;
+    }
+</style>
+
+<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+
+<div class="tracy-inner tracy-InfoPanel">
+    <div class="tracy-inner-container">
+        <div id="phpinfoBody"><?= $this->getData() ?></div>
+    </div>
+</div>
