@@ -7,7 +7,7 @@ return [
         'addContentLengthHeader'            => false,// if true = Unexpected data in output buffer
         'routerCacheFile'                   => false,
 
-        'db' => [
+        'database' => [
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'database'  => 'db_name',
@@ -29,6 +29,9 @@ return [
         'debugger' => [
             'debug'        => true,
             'logDirectory' => __DIR__ . '/logs',
+            'panels'       => [
+                'enabled' => 'all',
+            ],
         ],
     ],
 ];

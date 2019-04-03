@@ -1,8 +1,8 @@
 <?php
 
-use Jwebas\Debugger\Panels\ConfigPanel;
+use Jwebas\Debugger\Panels\JwebasConfigPanel;
 
-/** @var ConfigPanel $this */
+/** @var JwebasConfigPanel $this */
 
 ?>
 
@@ -16,7 +16,7 @@ use Jwebas\Debugger\Panels\ConfigPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
 
 <div class="tracy-inner tracy-ConfigPanel">
     <div class="tracy-inner-container">

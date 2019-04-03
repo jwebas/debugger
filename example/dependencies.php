@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Jwebas\Config\Config;
-use Jwebas\Config\Loaders\DirectoryLoader;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Environment;
 use Slim\Http\Uri;
@@ -12,22 +11,22 @@ use Twig\Profiler\Profile;
 
 // Config
 $container['config'] = static function (): Config {
-    $configLoader = new DirectoryLoader();
+    $config = include __DIR__ . '/config.php';
 
-    return $configLoader->load(__DIR__, 'config.php');
+    return new Config($config);
 };
 
 // Illuminate database
-$container['db'] = static function (ContainerInterface $c): Capsule {
+$container['database'] = static function (ContainerInterface $c): Capsule {
     $capsule = new Capsule;
-    $capsule->addConnection($c->get('settings')['db']);
+    $capsule->addConnection($c->get('config')->get('settings.database'));
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
     $capsule::connection()->enableQueryLog();
 
     return $capsule;
 };
-$capsule = $container['db'];
+$capsule = $container['database'];
 
 // Twig template engine
 $container['twigProfile'] = static function () {

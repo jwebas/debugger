@@ -5,6 +5,8 @@ namespace Jwebas\Debugger;
 
 
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use Slim\Exception\ContainerValueNotFoundException;
 use Tracy\Debugger as TracyDebugger;
 use Tracy\IBarPanel;
 
@@ -17,8 +19,8 @@ class Debugger extends TracyDebugger
      */
     public static function run(array $settings = []): void
     {
-        $mainConfig = include __DIR__ . '/../config/debugger.php';
-        $config = array_merge($mainConfig, $settings);
+        $defaultConfig = static::getConfig();
+        $config = array_replace_recursive($defaultConfig, $settings);
 
         $mode = static::DETECT;
         $logDirectory = null;
@@ -60,24 +62,30 @@ class Debugger extends TracyDebugger
     /**
      * Add panels.
      *
-     * @param array                   $settings
+     * @param array                   $panels
      * @param ContainerInterface|null $container
      */
-    public static function addPanels(array $settings = [], $container = null): void
+    public static function addPanels(array $panels = [], $container = null): void
     {
-        $mainConfig = include __DIR__ . '/../config/debugger.php';
-        $config = array_merge($mainConfig, $settings);
+        $defaultPanels = static::getConfig()['panels'];
+        $panels = array_replace_recursive($defaultPanels, $panels);
 
-        if (!$config['debug']) {
-            return;
+        $enabledPanels = [];
+
+        if (is_string($panels['enabled'])) {
+            if ('all' === $panels['enabled']) {
+                $enabledPanels = array_keys($panels['defined']);
+            } else {
+                $enabledPanels[] = $panels['enabled'];
+            }
+        } else {
+            $enabledPanels = $panels['enabled'];
         }
 
-        foreach ($config['panels'] as $key => $panel) {
-            $enabled = $panel['enabled'] ?? true;
-            $title = $panel['title'] ?? '';
-
-            if ($enabled) {
-                static::addPanel(new $panel['class']($container, $title), $key);
+        foreach ($enabledPanels as $panelKey) {
+            $resolved = static::panelIsResolved($panelKey, $panels['defined'], $container);
+            if (false !== $resolved) {
+                static::addPanel(new $resolved['class']($container, $resolved), $panelKey);
             }
         }
     }
@@ -91,6 +99,74 @@ class Debugger extends TracyDebugger
     public static function addPanel(IBarPanel $panel, $id = null): void
     {
         static::getBar()->addPanel($panel, $id);
+    }
+
+    /**
+     * Get default config
+     *
+     * @return array
+     */
+    protected static function getConfig(): array
+    {
+        return include __DIR__ . '/../config/debugger.php';
+    }
+
+    /**
+     * Resolve panel
+     *
+     * @param string                  $key
+     * @param array                   $panels
+     * @param ContainerInterface|null $container
+     *
+     * @return bool|array
+     */
+    protected static function panelIsResolved(string $key, array $panels, $container = null)
+    {
+        if (!array_key_exists($key, $panels)) {
+            return false;
+        }
+
+        $panel = $panels[$key];
+
+        if (!class_exists($panel['class'])) {
+            return false;
+        }
+
+        $class = new ReflectionClass($panel['class']);
+        if (!$class->implementsInterface(IBarPanel::class)) {
+            return false;
+        }
+
+        $required = $panel['required'] ?? true;
+        if (!$required) {
+            return false;
+        }
+
+        $containerKey = $panel['containerKey'] ?? null;
+        if (null !== $containerKey) {
+
+            if (null === $container) {
+                return false;
+            }
+
+            $keys = [];
+
+            if (is_string($containerKey)) {
+                $keys[] = $containerKey;
+            } else {
+                $keys = $containerKey;
+            }
+
+            foreach ($keys as $value) {
+                try {
+                    $container->get($value);
+                } catch (ContainerValueNotFoundException $e) {
+                    return false;
+                }
+            }
+        }
+
+        return $panel;
     }
 
     /**

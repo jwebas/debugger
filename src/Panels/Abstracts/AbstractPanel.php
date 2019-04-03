@@ -17,20 +17,25 @@ abstract class AbstractPanel implements IBarPanel
     protected $container;
 
     /**
+     * @var array
+     */
+    protected $params;
+
+    /**
      * @var string
      */
-    protected $title;
+    protected $title = '';
 
     /**
      * AbstractPanel constructor.
      *
      * @param ContainerInterface|null $container
-     * @param string                  $title
+     * @param array                   $params
      */
-    public function __construct($container = null, $title = '')
+    public function __construct($container = null, array $params = [])
     {
         $this->container = $container;
-        $this->title = $title;
+        $this->params = $params;
     }
 
     /**
@@ -48,5 +53,21 @@ abstract class AbstractPanel implements IBarPanel
         ];
 
         return Dumper::toHtml($item, $options);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->params['title'] ?? $this->title;
+    }
+
+    /**
+     * @return string|array
+     */
+    public function getContainerKey()
+    {
+        return $this->params['containerKey'] ?? '';
     }
 }

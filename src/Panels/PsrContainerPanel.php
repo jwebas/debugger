@@ -6,8 +6,9 @@ namespace Jwebas\Debugger\Panels;
 
 
 use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Psr\Container\ContainerInterface;
 
-class ContainerPanel extends AbstractPanel
+class PsrContainerPanel extends AbstractPanel
 {
     /**
      * @var string
@@ -21,7 +22,7 @@ class ContainerPanel extends AbstractPanel
      */
     public function getTab(): string
     {
-        return '<span title="' . $this->title . '">' . $this->getIcon() . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $this->getIcon() . '</span>';
     }
 
     /**
@@ -32,25 +33,17 @@ class ContainerPanel extends AbstractPanel
     public function getPanel(): string
     {
         ob_start();
-        if (null !== $this->container) {
-            require __DIR__ . '/templates/container.panel.phtml';
-        } else {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $msg = 'Container not defined';
-            require __DIR__ . '/templates/not_found.panel.phtml';
-        }
+        require __DIR__ . '/templates/psr_container.panel.phtml';
 
         return ob_get_clean();
     }
 
     /**
-     * @return array
+     * @return ContainerInterface
      */
-    public function getData(): array
+    public function getData(): ContainerInterface
     {
-        return [
-            'full' => $this->container,
-        ];
+        return $this->container;
     }
 
     /**

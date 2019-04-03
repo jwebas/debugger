@@ -22,7 +22,7 @@ class SlimRouterPanel extends AbstractPanel
      */
     public function getTab(): string
     {
-        return '<span title="' . $this->title . '">' . $this->getIcon() . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $this->getIcon() . '</span>';
     }
 
     /**
@@ -33,13 +33,7 @@ class SlimRouterPanel extends AbstractPanel
     public function getPanel(): string
     {
         ob_start();
-        if (class_exists(Router::class)) {
-            require __DIR__ . '/templates/slim_router.panel.phtml';
-        } else {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $msg = 'Class Slim\Router not found';
-            require __DIR__ . '/templates/not_found.panel.phtml';
-        }
+        require __DIR__ . '/templates/slim_router.panel.phtml';
 
         return ob_get_clean();
     }
@@ -50,7 +44,7 @@ class SlimRouterPanel extends AbstractPanel
     public function getData(): array
     {
         /** @var Router $slimRouter */
-        $slimRouter = $this->container->get('router');
+        $slimRouter = $this->container->get($this->getContainerKey());
 
         return [
             'items'  => [

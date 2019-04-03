@@ -47,7 +47,7 @@ require __DIR__ . '/dependencies.php';
  * Step 7: Enable Debugger panels
  */
 
-Debugger::addPanels($config['settings']['debugger'], $container);
+Debugger::addPanels($config['settings']['debugger']['panels'], $container);
 
 /**
  * Step 8: Run Slim application

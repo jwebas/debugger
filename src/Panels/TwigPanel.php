@@ -25,7 +25,7 @@ class TwigPanel extends AbstractPanel
     public function getTab(): string
     {
 
-        return '<span title="' . $this->title . '">' . $this->getIcon() . ' ' . $this->getData()['time'] . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $this->getIcon() . ' ' . $this->getData()['time'] . '</span>';
     }
 
     /**
@@ -36,13 +36,7 @@ class TwigPanel extends AbstractPanel
     public function getPanel(): string
     {
         ob_start();
-        if (class_exists(Twig::class) && class_exists(Profile::class)) {
-            require __DIR__ . '/templates/twig.panel.phtml';
-        } else {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $msg = 'Class Slim\Views\Twig or Twig\Profiler\Profile not found';
-            require __DIR__ . '/templates/not_found.panel.phtml';
-        }
+        require __DIR__ . '/templates/twig.panel.phtml';
 
         return ob_get_clean();
     }
@@ -52,11 +46,11 @@ class TwigPanel extends AbstractPanel
      */
     protected function getData(): array
     {
-        /** @var Profile $twigProfile */
-        $twigProfile = $this->container->get('twigProfile');
-
         /** @var Twig $twig */
-        $twig = $this->container->get('twig');
+        $twig = $this->container->get($this->getContainerKey()[0]);
+
+        /** @var Profile $twigProfile */
+        $twigProfile = $this->container->get($this->getContainerKey()[1]);
 
         return [
             'twigProfile' => $twigProfile,

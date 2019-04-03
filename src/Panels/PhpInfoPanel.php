@@ -23,7 +23,7 @@ class PhpInfoPanel extends AbstractPanel
      */
     public function getTab(): string
     {
-        return '<span title="' . $this->title . '">' . $this->getIcon() . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $this->getIcon() . '</span>';
     }
 
     /**

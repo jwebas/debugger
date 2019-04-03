@@ -16,7 +16,7 @@ use Jwebas\Debugger\Panels\PhpSessionPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->title ?></h1>
+<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
 
 <div class="tracy-inner tracy-PhpSessionPanel">
     <div class="tracy-inner-container">
@@ -26,7 +26,7 @@ use Jwebas\Debugger\Panels\PhpSessionPanel;
                 <?= $datum['title'] ?>
             </span>
 
-            <table class="tracy-table tracy-sortable tracy-table-<?= $key; ?>">
+            <table class="tracy-table tracy-sortable tracy-table-<?= $key ?>">
                 <thead>
                 <tr>
                     <th>Key</th>

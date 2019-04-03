@@ -22,7 +22,7 @@ class SlimRequestPanel extends AbstractPanel
      */
     public function getTab(): string
     {
-        return '<span title="' . $this->title . '">' . $this->getIcon() . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $this->getIcon() . '</span>';
     }
 
     /**
@@ -33,13 +33,7 @@ class SlimRequestPanel extends AbstractPanel
     public function getPanel(): string
     {
         ob_start();
-        if (class_exists(Request::class)) {
-            require __DIR__ . '/templates/slim_request.panel.phtml';
-        } else {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $msg = 'Class Slim\Http\Request not found';
-            require __DIR__ . '/templates/not_found.panel.phtml';
-        }
+        require __DIR__ . '/templates/slim_request.panel.phtml';
 
         return ob_get_clean();
     }
@@ -50,7 +44,7 @@ class SlimRequestPanel extends AbstractPanel
     public function getData(): array
     {
         /** @var Request $slimRequest */
-        $slimRequest = $this->container->get('request');
+        $slimRequest = $this->container->get($this->getContainerKey());
 
         return [
             'items' => [

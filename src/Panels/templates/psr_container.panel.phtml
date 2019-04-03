@@ -1,0 +1,17 @@
+<?php
+
+use Jwebas\Debugger\Panels\PsrContainerPanel;
+
+/** @var PsrContainerPanel $this */
+
+?>
+
+<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+
+<div class="tracy-inner tracy-SlimContainer">
+    <div class="tracy-inner-container">
+
+        <div><?= $this->toHtml($this->getData()) ?></div>
+
+    </div>
+</div>

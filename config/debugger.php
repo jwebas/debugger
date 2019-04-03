@@ -204,64 +204,75 @@ return [
 
     'panels' => [
 
-        'jwebasConfig' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\ConfigPanel::class,
-            'title'   => 'Config',
-        ],
+        //Panels array or name. 'all' - enable all panels
+        'enabled' => [],
 
-        'container' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\ContainerPanel::class,
-            'title'   => 'Container',
-        ],
+        'defined' => [
 
-        'eloquentOrm' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
-            'title'   => 'Eloquent ORM (database)',
-        ],
+            'eloquentOrm' => [
+                'class'        => \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
+                'title'        => 'Eloquent ORM (database)',
+                'containerKey' => 'database',
+                'required'     => class_exists(\Illuminate\Database\Capsule\Manager::class),
+            ],
 
-        'slimRouter' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\SlimRouterPanel::class,
-            'title'   => 'Slim Router',
-        ],
+            'jwebasConfig' => [
+                'class'        => \Jwebas\Debugger\Panels\JwebasConfigPanel::class,
+                'title'        => 'Config',
+                'containerKey' => 'config',
+                'required'     => class_exists(\Jwebas\Config\Config::class),
+            ],
 
-        'slimRequest' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\SlimRequestPanel::class,
-            'title'   => 'Slim Http Request',
-        ],
+            'phpInfo' => [
+                'class' => \Jwebas\Debugger\Panels\PhpInfoPanel::class,
+                'title' => 'Php Info',
+            ],
 
-        'slimResponse' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\SlimResponsePanel::class,
-            'title'   => 'Slim Http Response',
-        ],
+            'phpSession' => [
+                'class' => \Jwebas\Debugger\Panels\PhpSessionPanel::class,
+                'title' => 'PHP Session',
+            ],
 
-        'slimEnvironment' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\SlimEnvironmentPanel::class,
-            'title'   => 'Slim Http Environment',
-        ],
+            'psrContainer' => [
+                'class'    => \Jwebas\Debugger\Panels\PsrContainerPanel::class,
+                'title'    => 'Container',
+                'required' => interface_exists(\Psr\Container\ContainerInterface::class),
+            ],
 
-        'twig' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\TwigPanel::class,
-            'title'   => 'Twig Templates Engine',
-        ],
+            'slimEnvironment' => [
+                'class'        => \Jwebas\Debugger\Panels\SlimEnvironmentPanel::class,
+                'title'        => 'Slim Http Environment',
+                'containerKey' => 'environment',
+                'required'     => class_exists(\Slim\Http\Environment::class),
+            ],
 
-        'phpSession' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\PhpSessionPanel::class,
-            'title'   => 'PHP Session',
-        ],
+            'slimRequest' => [
+                'class'        => \Jwebas\Debugger\Panels\SlimRequestPanel::class,
+                'title'        => 'Slim Http Request',
+                'containerKey' => 'request',
+                'required'     => class_exists(\Slim\Http\Request::class),
+            ],
 
-        'phpInfo' => [
-            'enabled' => true,
-            'class'   => \Jwebas\Debugger\Panels\PhpInfoPanel::class,
-            'title'   => 'Php Info',
+            'slimResponse' => [
+                'class'        => \Jwebas\Debugger\Panels\SlimResponsePanel::class,
+                'title'        => 'Slim Http Response',
+                'containerKey' => 'response',
+                'required'     => class_exists(\Slim\Http\Response::class),
+            ],
+
+            'slimRouter' => [
+                'class'        => \Jwebas\Debugger\Panels\SlimRouterPanel::class,
+                'title'        => 'Slim Router',
+                'containerKey' => 'router',
+                'required'     => class_exists(\Slim\Router::class),
+            ],
+
+            'twig' => [
+                'class'        => \Jwebas\Debugger\Panels\TwigPanel::class,
+                'title'        => 'Twig Templates Engine',
+                'containerKey' => ['twig', 'twigProfile'],
+                'required'     => class_exists(\Twig\Environment::class) && class_exists(\Twig\Profiler\Profile::class),
+            ],
         ],
     ],
 ];

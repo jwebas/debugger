@@ -25,7 +25,7 @@ class EloquentOrmPanel extends AbstractPanel
         $data = $this->getInfo();
         $content = $this->getIcon() . ' ' . $data['count'] . ' / ' . $data['time'];
 
-        return '<span title="' . $this->title . '">' . $content . '</span>';
+        return '<span title="' . $this->getTitle() . '">' . $content . '</span>';
     }
 
     /**
@@ -36,13 +36,7 @@ class EloquentOrmPanel extends AbstractPanel
     public function getPanel(): string
     {
         ob_start();
-        if (class_exists(Manager::class)) {
-            require __DIR__ . '/templates/eloquent_orm.panel.phtml';
-        } else {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $msg = 'Class Illuminate\Database\Capsule\Manager not found';
-            require __DIR__ . '/templates/not_found.panel.phtml';
-        }
+        require __DIR__ . '/templates/eloquent_orm.panel.phtml';
 
         return ob_get_clean();
     }
@@ -53,7 +47,7 @@ class EloquentOrmPanel extends AbstractPanel
     protected function getInfo(): array
     {
         /** @var Manager $manager */
-        $manager = $this->container->get('db');
+        $manager = $this->container->get($this->getContainerKey());
         $queryLog = $manager->getConnection()->getQueryLog();
         $time = $cnt = 0;
         $content = '';
