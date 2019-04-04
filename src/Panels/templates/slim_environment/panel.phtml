@@ -1,24 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\SlimRequestPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-/** @var SlimRequestPanel $this */
+/** @var $this AbstractPanel */
+/** @var string $panelTitle */
+/** @var array $data */
 
 ?>
 
 <style class="tracy-debug">
-    .tracy-SlimRequestPanel table.tracy-table .e {
-        width : 160px;
+    .tracy-SlimEnvironment table.tracy-table .e {
+        width : 130px;
     }
 
-    .tracy-SlimRequestPanel table.tracy-table .v {
-        max-width : 500px;
+    .tracy-SlimEnvironment table.tracy-table .v {
+        max-width : 400px;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
-<div class="tracy-inner tracy-SlimRequestPanel">
+<div class="tracy-inner tracy-SlimEnvironment">
     <div class="tracy-inner-container">
 
         <table class="tracy-table tracy-sortable">
@@ -29,7 +31,7 @@ use Jwebas\Debugger\Panels\SlimRequestPanel;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getData()['items'] as $title => $value): ?>
+            <?php foreach ($data['all'] as $title => $value): ?>
                 <tr>
                     <td class="e"><?= $title ?></td>
                     <td class="v"><?= $this->toHtml($value) ?></td>
@@ -37,8 +39,5 @@ use Jwebas\Debugger\Panels\SlimRequestPanel;
             <?php endforeach; ?>
             </tbody>
         </table>
-
-        <div><?= $this->toHtml($this->getData()['full']) ?></div>
-
     </div>
 </div>

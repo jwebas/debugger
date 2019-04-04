@@ -85,6 +85,7 @@ class Debugger extends TracyDebugger
         foreach ($enabledPanels as $panelKey) {
             $resolved = static::panelIsResolved($panelKey, $panels['defined'], $container);
             if (false !== $resolved) {
+                $resolved['show_title'] = $panels['show_title'];
                 static::addPanel(new $resolved['class']($container, $resolved), $panelKey);
             }
         }

@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\TwigPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-/** @var TwigPanel $this */
+/** @var $this AbstractPanel */
+/** @var string $panelTitle */
+/** @var array $data */
 
 ?>
 
@@ -16,7 +18,7 @@ use Jwebas\Debugger\Panels\TwigPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
 <div class="tracy-inner tracy-TwigPanel">
     <div class="tracy-inner-container">
@@ -31,7 +33,7 @@ use Jwebas\Debugger\Panels\TwigPanel;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getData()['extensions'] as $title => $value): ?>
+            <?php foreach ($data['extensions'] as $title => $value): ?>
                 <tr>
                     <td class="e"><?= $title ?></td>
                     <td class="v"><?= $this->toHtml($value) ?></td>
@@ -41,13 +43,13 @@ use Jwebas\Debugger\Panels\TwigPanel;
         </table>
 
         <span style="font-weight: bold;">Twig Loader</span>
-        <div style="margin-bottom: 15px;"><?= $this->toHtml($this->getData()['loader']) ?></div>
+        <div style="margin-bottom: 15px;"><?= $this->toHtml($data['loader']) ?></div>
 
         <span style="font-weight: bold;">Twig</span>
-        <div style="margin-bottom: 15px;"><?= $this->toHtml($this->getData()['full']) ?></div>
+        <div style="margin-bottom: 15px;"><?= $this->toHtml($data['full']) ?></div>
 
         <span style="font-weight: bold;">Twig Profile</span>
-        <div><?= $this->toHtml($this->getData()['twigProfile']) ?></div>
+        <div><?= $this->toHtml($data['twigProfile']) ?></div>
 
     </div>
 </div>

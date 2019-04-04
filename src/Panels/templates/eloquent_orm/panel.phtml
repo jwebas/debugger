@@ -1,11 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\EloquentOrmPanel;
-
-/** @var EloquentOrmPanel $this */
-
-$data = $this->getInfo();
-
+/** @var string $panelTitle */
+/** @var array $data */
 ?>
 
 <!--suppress CssUnusedSymbol -->
@@ -23,7 +19,7 @@ $data = $this->getInfo();
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?> <?= $data['count'] ?>/<?= $data['time'] ?></h1>
+<h1><?= $panelTitle ?> <?= $data['count'] ?>/<?= $data['time'] ?></h1>
 
 <div class="tracy-inner tracy-EloquentOrm">
     <div class="tracy-inner-container">

@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\SlimResponsePanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-/** @var SlimResponsePanel $this */
+/** @var $this AbstractPanel */
+/** @var string $panelTitle */
+/** @var array $data */
 
 ?>
 
@@ -16,7 +18,7 @@ use Jwebas\Debugger\Panels\SlimResponsePanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
 <div class="tracy-inner tracy-SlimResponsePanel">
     <div class="tracy-inner-container">
@@ -29,7 +31,7 @@ use Jwebas\Debugger\Panels\SlimResponsePanel;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getData()['items'] as $title => $value): ?>
+            <?php foreach ($data['items'] as $title => $value): ?>
                 <tr>
                     <td class="e"><?= $title ?></td>
                     <td class="v"><?= $this->toHtml($value) ?></td>
@@ -38,7 +40,7 @@ use Jwebas\Debugger\Panels\SlimResponsePanel;
             </tbody>
         </table>
 
-        <div><?= $this->toHtml($this->getData()['full']) ?></div>
+        <div><?= $this->toHtml($data['full']) ?></div>
 
     </div>
 </div>

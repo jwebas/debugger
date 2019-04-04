@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\JwebasConfigPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-/** @var JwebasConfigPanel $this */
+/** @var $this AbstractPanel */
+/** @var string $panelTitle */
+/** @var array $data */
 
 ?>
 
@@ -16,7 +18,7 @@ use Jwebas\Debugger\Panels\JwebasConfigPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
 <div class="tracy-inner tracy-ConfigPanel">
     <div class="tracy-inner-container">
@@ -28,7 +30,7 @@ use Jwebas\Debugger\Panels\JwebasConfigPanel;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getData() as $title => $value): ?>
+            <?php foreach ($data as $title => $value): ?>
                 <tr>
                     <td class="e"><?= $title ?></td>
                     <td class="v"><?= $this->toHtml($value) ?></td>

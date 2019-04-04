@@ -204,14 +204,17 @@ return [
 
     'panels' => [
 
+        //Show Panel title in bar
+        'show_title' => true,
+
         //Panels array or name. 'all' - enable all panels
-        'enabled' => [],
+        'enabled'    => [],
 
         'defined' => [
 
             'eloquentOrm' => [
                 'class'        => \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
-                'title'        => 'Eloquent ORM (database)',
+                'title'        => 'Eloquent ORM',
                 'containerKey' => 'database',
                 'required'     => class_exists(\Illuminate\Database\Capsule\Manager::class),
             ],

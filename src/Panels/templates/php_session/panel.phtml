@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\PhpSessionPanel;
+use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
 
-/** @var PhpSessionPanel $this */
+/** @var $this AbstractPanel */
+/** @var string $panelTitle */
+/** @var array $data */
 
 ?>
 
@@ -16,11 +18,11 @@ use Jwebas\Debugger\Panels\PhpSessionPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
 <div class="tracy-inner tracy-PhpSessionPanel">
     <div class="tracy-inner-container">
-        <?php foreach ($this->getData() as $key => $datum): ?>
+        <?php foreach ($data as $key => $datum): ?>
 
             <span style="font-weight: bold;">
                 <?= $datum['title'] ?>

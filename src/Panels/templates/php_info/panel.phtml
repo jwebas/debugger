@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\PhpInfoPanel;
-
-/** @var PhpInfoPanel $this */
-
+/** @var string $panelTitle */
+/** @var array $data */
 ?>
 
 <!--suppress CssUnusedSymbol -->
@@ -104,10 +102,10 @@ use Jwebas\Debugger\Panels\PhpInfoPanel;
     }
 </style>
 
-<h1><?= $this->getIcon() ?> <?= $this->getTitle() ?></h1>
+<h1><?= $panelTitle ?></h1>
 
 <div class="tracy-inner tracy-InfoPanel">
     <div class="tracy-inner-container">
-        <div id="phpinfoBody"><?= $this->getData() ?></div>
+        <div id="phpinfoBody"><?= $data['dom'] ?></div>
     </div>
 </div>
