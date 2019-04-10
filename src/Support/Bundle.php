@@ -67,7 +67,7 @@ abstract class Bundle extends BasePanel implements BundleInterface
             $p = Debugger::resolvePanel($panel, $this->container);
 
             if ($p->valid()) {
-                $t .= '<input id="tab-' . $p->id . '" type="radio" name="grp" ' . (!$checked ? 'checked="checked"' : '') . '>';
+                $t .= '<input id="tab-' . $p->id . '" type="radio" name="' . $this->id . '" ' . (!$checked ? 'checked="checked"' : '') . '>';
                 $t .= '<label for="tab-' . $p->id . '">' . $p->getIcon() . ' ' . $p->panelTitle . '</label>';
                 $t .= '<div class="panel-content">' . $p->getContent() . '</div>';
 
