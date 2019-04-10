@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jwebas\Debugger\Support;
 
 
+use Jwebas\Debugger\Debugger;
 use Psr\Container\ContainerInterface;
 
 abstract class Bundle extends BasePanel implements BundleInterface
@@ -63,12 +64,11 @@ abstract class Bundle extends BasePanel implements BundleInterface
 
         $t .= '<section id="tracy-tabs">';
         foreach ($this->panels as $key => $panel) {
-            /** @var Panel $p */
-            $p = new $panel($this->container);
+            $p = Debugger::resolvePanel($panel, $this->container);
 
             if ($p->valid()) {
-                $t .= '<input id="tab-' . $key . '" type="radio" name="grp" ' . (!$checked ? 'checked="checked"' : '') . '>';
-                $t .= '<label for="tab-' . $key . '">' . $p->getIcon() . ' ' . $p->panelTitle . '</label>';
+                $t .= '<input id="tab-' . $p->id . '" type="radio" name="grp" ' . (!$checked ? 'checked="checked"' : '') . '>';
+                $t .= '<label for="tab-' . $p->id . '">' . $p->getIcon() . ' ' . $p->panelTitle . '</label>';
                 $t .= '<div class="panel-content">' . $p->getContent() . '</div>';
 
                 $checked = true;
@@ -89,7 +89,7 @@ abstract class Bundle extends BasePanel implements BundleInterface
     {
         foreach ($this->panels as $panel) {
             /** @var Panel $p */
-            $p = new $panel($this->container);
+            $p = Debugger::resolvePanel($panel, $this->container);
 
             if ($p->valid()) {
                 return true;

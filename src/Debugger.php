@@ -80,23 +80,9 @@ class Debugger extends TracyDebugger
     public static function renderPanels($container = null): void
     {
         foreach (static::$panels as $panel) {
-
-            /** @var null|string|array $containerKey */
-            $containerKey = null;
-            if (is_array($panel)) {
-                [$class, $containerKey] = $panel;
-            } else {
-                $class = $panel;
-            }
-
-            /** @var PanelInterface|BundleInterface|Panel $panelClass */
-            $panelClass = new $class($container);
+            $panelClass = static::resolvePanel($panel, $container);
             if (($panelClass instanceof PanelInterface || $panelClass instanceof BundleInterface)
                 && $panelClass instanceof IBarPanel && $panelClass->valid()) {
-
-                if ($panelClass instanceof PanelInterface && null !== $containerKey) {
-                    $panelClass->setContainerKey($containerKey);
-                }
 
                 static::addPanel($panelClass, $panelClass->getId());
             }
@@ -122,6 +108,31 @@ class Debugger extends TracyDebugger
     protected static function getConfig(): array
     {
         return include __DIR__ . '/../config/debugger.php';
+    }
+
+    /**
+     * @param string|array            $panel
+     * @param ContainerInterface|null $container
+     *
+     * @return BundleInterface|Panel|PanelInterface
+     */
+    public static function resolvePanel($panel, $container)
+    {
+        $containerKey = null;
+        if (is_array($panel)) {
+            [$class, $containerKey] = $panel;
+        } else {
+            $class = $panel;
+        }
+
+        /** @var PanelInterface|BundleInterface|Panel $panelClass */
+        $panelClass = new $class($container);
+
+        if ($panelClass instanceof PanelInterface && null !== $containerKey) {
+            $panelClass->setContainerKey($containerKey);
+        }
+
+        return $panelClass;
     }
 
     /**
