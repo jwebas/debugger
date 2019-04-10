@@ -14,8 +14,8 @@ class SymfonyFrameworkBundle extends Bundle
      * @var array
      */
     protected $panels = [
-        [SymfonyRequestPanel::class, 'sfRequest'],
-        [SymfonyResponsePanel::class, 'sfResponse'],
+        SymfonyRequestPanel::class,
+        SymfonyResponsePanel::class,
     ];
 
     /**
