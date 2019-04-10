@@ -36,6 +36,7 @@ return [
                 \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
                 \Jwebas\Debugger\Bundles\PhpBundle::class,
                 \Jwebas\Debugger\Bundles\SlimFrameworkBundle::class,
+                \Jwebas\Debugger\Bundles\SymfonyFrameworkBundle::class,
             ],
         ],
     ],

@@ -1,0 +1,35 @@
+<?php declare(strict_types=1);
+
+/** @var \Jwebas\Debugger\Support\Panel $this */
+/** @var array $data */
+
+?>
+
+<style class="tracy-debug">
+    table.tracy-table.table-symfonyResponse .e {
+        width : 120px;
+    }
+
+    table.tracy-table.table-symfonyResponse .v {
+        max-width : 500px;
+    }
+</style>
+
+<table class="tracy-table tracy-sortable table-symfonyResponse">
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data['items'] as $title => $value): ?>
+        <tr>
+            <td class="e"><?= $title ?></td>
+            <td class="v"><?= $this->toHtml($value) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div><?= $this->toHtml($data['full']) ?></div>

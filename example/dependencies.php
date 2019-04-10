@@ -7,6 +7,8 @@ use Slim\Http\Environment;
 use Slim\Http\Uri;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Twig\Profiler\Profile;
 
 //Unset Slim phpErrorHandler and errorHandler
@@ -47,4 +49,14 @@ $container['twig'] = static function (ContainerInterface $c): Twig {
     $view->addExtension(new TwigExtension($router, $uri));
 
     return $view;
+};
+
+//Symfony request
+$container['sfRequest'] = static function (): Request {
+    return Request::createFromGlobals();
+};
+
+//Symfony request
+$container['sfResponse'] = static function (): Response {
+    return new Response();
 };

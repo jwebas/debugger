@@ -17,6 +17,8 @@ Debugger requires PHP 7.1.3+.
 * SlimResponsePanel - Slim Framework Http Response (https://github.com/slimphp/Slim)
 * SlimRouterPanel - Slim Framework Router (https://github.com/slimphp/Slim)
 * SlimTwigPanel - Slim Framework Twig View (https://github.com/slimphp/Twig-View)
+* SymfonyRequestPanel - Symfony Request (https://symfony.com/doc/current/components/http_foundation.html)
+* SymfonyResponsePanel - Symfony Response (https://symfony.com/doc/current/components/http_foundation.html)
 
 ### Bundles
 * PhpBundle
@@ -29,6 +31,9 @@ Debugger requires PHP 7.1.3+.
     * SlimResponsePanel
     * SlimRouterPanel
     * SlimTwigPanel
+* SymfonyFrameworkBundle
+    * SymfonyRequestPanel
+    * SymfonyResponsePanel
 
 ### Special
 * SlimCurrentRoutePanel - Slim Framework Current route panel (added with DebuggerSlimMiddleware)
