@@ -4,22 +4,43 @@
 namespace Jwebas\Debugger\Panels;
 
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 
-class PhpSessionPanel extends AbstractPanel
+class PhpSessionPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'PHP Session';
+    public $id = 'phpSession';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/php_session/';
+    public $barTitle;
 
     /**
-     * @inheritDoc
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Php Session';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/php_session/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/php_session/panel.phtml';
+
+    /**
+     * @return array
      */
     public function getData(): array
     {
@@ -51,5 +72,13 @@ class PhpSessionPanel extends AbstractPanel
                 ],
             ],
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return session_status() !== PHP_SESSION_DISABLED;
     }
 }

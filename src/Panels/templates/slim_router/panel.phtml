@@ -1,77 +1,65 @@
 <?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
-use Slim\Route;
-
-/** @var $this AbstractPanel */
-/** @var Route $route */
-/** @var string $panelTitle */
+/** @var \Jwebas\Debugger\Support\Panel $this */
+/** @var \Slim\Route $route */
 /** @var array $data */
 
 ?>
 
 <style class="tracy-debug">
-    .tracy-SlimRouterPanel table.tracy-table .e {
+    table.tracy-table.table-slimRouter .e {
         width : 160px;
     }
 
-    .tracy-SlimRouterPanel table.tracy-table .v {
+    table.tracy-table.table-slimRouter .v {
         max-width : 500px;
     }
 </style>
 
-<h1><?= $panelTitle ?></h1>
+<span style="font-weight: bold;">Routes</span>
+<table class="tracy-table tracy-sortable table-slimRouter">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Pattern</th>
+        <th>Methods</th>
+        <th>Callable</th>
+        <th>Middlewares</th>
+        <th>Arguments</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data['routes'] as $route): ?>
+        <tr>
+            <td class="r1"><?= $route->getIdentifier() ?></td>
+            <td class="r2"><?= $route->getName() ?></td>
+            <td class="r3"><?= $route->getPattern() ?></td>
+            <td class="r4"><?= implode(', ', $route->getMethods()) ?></td>
+            <td class="r5"><?= $this->toHtml($route->getCallable()) ?></td>
+            <td class="r6"><?= $this->toHtml($route->getMiddleware()) ?></td>
+            <td class="r7"><?= $this->toHtml($route->getArguments()) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 
-<div class="tracy-inner tracy-SlimRouterPanel">
-    <div class="tracy-inner-container">
+<span style="font-weight: bold;">Router data</span>
+<table class="tracy-table table-slimRouter">
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data['items'] as $title => $value): ?>
+        <tr>
+            <td class="e"><?= $title ?></td>
+            <td class="v"><?= $this->toHtml($value) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 
-        <span style="font-weight: bold;">Routes</span>
-        <table class="tracy-table tracy-sortable">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Pattern</th>
-                <th>Methods</th>
-                <th>Callable</th>
-                <th>Middlewares</th>
-                <th>Arguments</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($data['routes'] as $route): ?>
-                <tr>
-                    <td class="r1"><?= $route->getIdentifier() ?></td>
-                    <td class="r2"><?= $route->getName() ?></td>
-                    <td class="r3"><?= $route->getPattern() ?></td>
-                    <td class="r4"><?= implode(', ', $route->getMethods()) ?></td>
-                    <td class="r5"><?= $this->toHtml($route->getCallable()) ?></td>
-                    <td class="r6"><?= $this->toHtml($route->getMiddleware()) ?></td>
-                    <td class="r7"><?= $this->toHtml($route->getArguments()) ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <span style="font-weight: bold;">Router data</span>
-        <table class="tracy-table">
-            <thead>
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($data['items'] as $title => $value): ?>
-                <tr>
-                    <td class="e"><?= $title ?></td>
-                    <td class="v"><?= $this->toHtml($value) ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <div><?= $this->toHtml($data['full']) ?></div>
-
-    </div>
-</div>
+<div><?= $this->toHtml($data['full']) ?></div>

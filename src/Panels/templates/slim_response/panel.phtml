@@ -1,46 +1,35 @@
 <?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
-
-/** @var $this AbstractPanel */
-/** @var string $panelTitle */
+/** @var \Jwebas\Debugger\Support\Panel $this */
 /** @var array $data */
 
 ?>
 
 <style class="tracy-debug">
-    .tracy-SlimResponsePanel table.tracy-table .e {
+    table.tracy-table.table-slimRequest .e {
         width : 120px;
     }
 
-    .tracy-SlimResponsePanel table.tracy-table .v {
+    table.tracy-table.table-slimRequest .v {
         max-width : 500px;
     }
 </style>
 
-<h1><?= $panelTitle ?></h1>
+<table class="tracy-table tracy-sortable table-slimRequest">
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data['items'] as $title => $value): ?>
+        <tr>
+            <td class="e"><?= $title ?></td>
+            <td class="v"><?= $this->toHtml($value) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 
-<div class="tracy-inner tracy-SlimResponsePanel">
-    <div class="tracy-inner-container">
-
-        <table class="tracy-table tracy-sortable">
-            <thead>
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($data['items'] as $title => $value): ?>
-                <tr>
-                    <td class="e"><?= $title ?></td>
-                    <td class="v"><?= $this->toHtml($value) ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <div><?= $this->toHtml($data['full']) ?></div>
-
-    </div>
-</div>
+<div><?= $this->toHtml($data['full']) ?></div>

@@ -5,19 +5,45 @@ namespace Jwebas\Debugger\Panels;
 
 
 use Jwebas\Config\Config;
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 
-class JwebasConfigPanel extends AbstractPanel
+class JwebasConfigPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Config';
+    public $id = 'jwebasConfig';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/jwebas_config/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Config';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/jwebas_config/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/jwebas_config/panel.phtml';
+
+    /**
+     * @var string|array|null
+     */
+    protected $containerKey = 'config';
 
     /**
      * @inheritDoc
@@ -25,8 +51,16 @@ class JwebasConfigPanel extends AbstractPanel
     public function getData(): array
     {
         /** @var Config $config */
-        $config = $this->container->get($this->getContainerKey());
+        $config = $this->container->get($this->containerKey);
 
         return $config->all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return null !== $this->container && class_exists(Config::class);
     }
 }

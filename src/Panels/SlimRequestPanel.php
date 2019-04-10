@@ -4,20 +4,46 @@
 namespace Jwebas\Debugger\Panels;
 
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 use Slim\Http\Request;
 
-class SlimRequestPanel extends AbstractPanel
+class SlimRequestPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Slim Http Request';
+    public $id = 'slimRequest';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/slim_request/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Request';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/slim_request/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/slim_request/panel.phtml';
+
+    /**
+     * @var string|array|null
+     */
+    protected $containerKey = 'request';
 
     /**
      * @inheritDoc
@@ -25,7 +51,7 @@ class SlimRequestPanel extends AbstractPanel
     public function getData(): array
     {
         /** @var Request $slimRequest */
-        $slimRequest = $this->container->get($this->getContainerKey());
+        $slimRequest = $this->container->get($this->containerKey);
 
         return [
             'items' => [
@@ -51,5 +77,13 @@ class SlimRequestPanel extends AbstractPanel
             ],
             'full'  => $slimRequest,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return null !== $this->container && class_exists(Request::class);
     }
 }

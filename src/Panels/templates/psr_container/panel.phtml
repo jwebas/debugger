@@ -1,17 +1,8 @@
 <?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
-
-/** @var $this AbstractPanel */
-/** @var string $panelTitle */
+/** @var \Jwebas\Debugger\Support\Panel $this */
 /** @var array $data */
 
 ?>
 
-<h1><?= $panelTitle ?></h1>
-
-<div class="tracy-inner tracy-SlimContainer">
-    <div class="tracy-inner-container">
-        <div><?= $this->toHtml($data['all']) ?></div>
-    </div>
-</div>
+<div><?= $this->toHtml($data['all']) ?></div>

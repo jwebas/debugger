@@ -1,0 +1,56 @@
+<?php declare(strict_types=1);
+
+/** @var $this \Jwebas\Debugger\Support\SinglePanel */
+/** @var $data \Slim\Route */
+
+?>
+
+<style class="tracy-debug">
+    table.tracy-table.table-SlimCurrentRoutePanel .e {
+        width : 120px;
+
+    }
+
+    table.tracy-table.table-SlimCurrentRoutePanel .v {
+        max-width : 500px;
+    }
+</style>
+
+<?php if (null === $data): ?>
+    Not found
+<?php else: ?>
+    <table class="tracy-table tracy-sortable table-SlimCurrentRoutePanel">
+        <tbody>
+        <tr>
+            <td class="e">Identifier</td>
+            <td class="v"><?= $this->toHtml($data->getIdentifier()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Methods</td>
+            <td class="v"><?= implode(',', $data->getMethods()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Name</td>
+            <td class="v"><?= $this->toHtml($data->getName()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Arguments</td>
+            <td class="v"><?= $this->toHtml($data->getArguments()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Groups</td>
+            <td class="v"><?= $this->toHtml($data->getGroups()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Callable</td>
+            <td class="v"><?= $this->toHtml($data->getCallable()) ?></td>
+        </tr>
+        <tr>
+            <td class="e">Output Buffering</td>
+            <td class="v"><?= $this->toHtml($data->getOutputBuffering()) ?></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div><?= $this->toHtml($data) ?></div>
+<?php endif; ?>

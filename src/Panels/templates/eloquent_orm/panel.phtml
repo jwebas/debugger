@@ -1,40 +1,32 @@
 <?php declare(strict_types=1);
 
-/** @var string $panelTitle */
 /** @var array $data */
 ?>
 
 <!--suppress CssUnusedSymbol -->
 <style class="tracy-debug">
-    .tracy-EloquentOrm table.tracy-table .e {
+    table.tracy-table.table-eloquentOrm .e {
         width : 100px;
     }
 
-    .tracy-EloquentOrm table.tracy-table .v {
+    table.tracy-table.table-eloquentOrm .v {
         width : 100px;
     }
 
-    .tracy-EloquentOrm table.tracy-table .u {
+    table.tracy-table.table-eloquentOrm .u {
         max-width : 560px;
     }
 </style>
 
-<h1><?= $panelTitle ?> <?= $data['count'] ?>/<?= $data['time'] ?></h1>
-
-<div class="tracy-inner tracy-EloquentOrm">
-    <div class="tracy-inner-container">
-
-        <table class="tracy-table tracy-sortable">
-            <thead>
-            <tr>
-                <th>No</th>
-                <th>Time, ms</th>
-                <th>Query / Bindings</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?= $data['content'] ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+<table class="tracy-table tracy-sortable table-eloquentOrm">
+    <thead>
+    <tr>
+        <th>No</th>
+        <th>Time, ms</th>
+        <th>Query / Bindings</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?= $data['content'] ?>
+    </tbody>
+</table>

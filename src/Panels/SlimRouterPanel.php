@@ -4,20 +4,46 @@
 namespace Jwebas\Debugger\Panels;
 
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 use Slim\Router;
 
-class SlimRouterPanel extends AbstractPanel
+class SlimRouterPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Slim Router';
+    public $id = 'slimRouter';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/slim_router/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Router';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/slim_router/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/slim_router/panel.phtml';
+
+    /**
+     * @var string|array|null
+     */
+    protected $containerKey = 'router';
 
     /**
      * @inheritDoc
@@ -25,7 +51,7 @@ class SlimRouterPanel extends AbstractPanel
     public function getData(): array
     {
         /** @var Router $slimRouter */
-        $slimRouter = $this->container->get($this->getContainerKey());
+        $slimRouter = $this->container->get($this->containerKey);
 
         return [
             'items'  => [
@@ -34,5 +60,13 @@ class SlimRouterPanel extends AbstractPanel
             'routes' => $slimRouter->getRoutes(),
             'full'   => $slimRouter,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return null !== $this->container && class_exists(Router::class);
     }
 }

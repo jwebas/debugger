@@ -4,14 +4,25 @@
 namespace Jwebas\Debugger;
 
 
+use Jwebas\Debugger\Support\BundleInterface;
+use Jwebas\Debugger\Support\Panel;
+use Jwebas\Debugger\Support\PanelInterface;
 use Psr\Container\ContainerInterface;
-use ReflectionClass;
-use Slim\Exception\ContainerValueNotFoundException;
 use Tracy\Debugger as TracyDebugger;
 use Tracy\IBarPanel;
 
 class Debugger extends TracyDebugger
 {
+    /**
+     * @var array
+     */
+    protected static $config = [];
+
+    /**
+     * @var array
+     */
+    protected static $panels = [];
+
     /**
      * Run debugger.
      *
@@ -20,11 +31,13 @@ class Debugger extends TracyDebugger
     public static function run(array $settings = []): void
     {
         $defaultConfig = static::getConfig();
-        $config = array_replace_recursive($defaultConfig, $settings);
+        static::$config = array_replace_recursive($defaultConfig, $settings);
 
         $mode = static::DETECT;
         $logDirectory = null;
         $email = null;
+
+        $config = static::$config;
 
         if (count($config)) {
             $mode = (bool)($config['debug'] ?? false) ? static::DEVELOPMENT : static::PRODUCTION;
@@ -57,36 +70,35 @@ class Debugger extends TracyDebugger
         }
 
         static::enable($mode, $logDirectory, $email);
+
+        static::$panels = $config['panels'] ?? [];
     }
 
     /**
-     * Add panels.
-     *
-     * @param array                   $panels
      * @param ContainerInterface|null $container
      */
-    public static function addPanels(array $panels = [], $container = null): void
+    public static function renderPanels($container = null): void
     {
-        $defaultPanels = static::getConfig()['panels'];
-        $panels = array_replace_recursive($defaultPanels, $panels);
+        foreach (static::$panels as $panel) {
 
-        $enabledPanels = [];
-
-        if (is_string($panels['enabled'])) {
-            if ('all' === $panels['enabled']) {
-                $enabledPanels = array_keys($panels['defined']);
+            /** @var null|string|array $containerKey */
+            $containerKey = null;
+            if (is_array($panel)) {
+                [$class, $containerKey] = $panel;
             } else {
-                $enabledPanels[] = $panels['enabled'];
+                $class = $panel;
             }
-        } else {
-            $enabledPanels = $panels['enabled'];
-        }
 
-        foreach ($enabledPanels as $panelKey) {
-            $resolved = static::panelIsResolved($panelKey, $panels['defined'], $container);
-            if (false !== $resolved) {
-                $resolved['show_title'] = $panels['show_title'];
-                static::addPanel(new $resolved['class']($container, $resolved), $panelKey);
+            /** @var PanelInterface|BundleInterface|Panel $panelClass */
+            $panelClass = new $class($container);
+            if (($panelClass instanceof PanelInterface || $panelClass instanceof BundleInterface)
+                && $panelClass instanceof IBarPanel && $panelClass->valid()) {
+
+                if ($panelClass instanceof PanelInterface && null !== $containerKey) {
+                    $panelClass->setContainerKey($containerKey);
+                }
+
+                static::addPanel($panelClass, $panelClass->getId());
             }
         }
     }
@@ -110,64 +122,6 @@ class Debugger extends TracyDebugger
     protected static function getConfig(): array
     {
         return include __DIR__ . '/../config/debugger.php';
-    }
-
-    /**
-     * Resolve panel
-     *
-     * @param string                  $key
-     * @param array                   $panels
-     * @param ContainerInterface|null $container
-     *
-     * @return bool|array
-     */
-    protected static function panelIsResolved(string $key, array $panels, $container = null)
-    {
-        if (!array_key_exists($key, $panels)) {
-            return false;
-        }
-
-        $panel = $panels[$key];
-
-        if (!class_exists($panel['class'])) {
-            return false;
-        }
-
-        $class = new ReflectionClass($panel['class']);
-        if (!$class->implementsInterface(IBarPanel::class)) {
-            return false;
-        }
-
-        $required = $panel['required'] ?? true;
-        if (!$required) {
-            return false;
-        }
-
-        $containerKey = $panel['containerKey'] ?? null;
-        if (null !== $containerKey) {
-
-            if (null === $container) {
-                return false;
-            }
-
-            $keys = [];
-
-            if (is_string($containerKey)) {
-                $keys[] = $containerKey;
-            } else {
-                $keys = $containerKey;
-            }
-
-            foreach ($keys as $value) {
-                try {
-                    $container->get($value);
-                } catch (ContainerValueNotFoundException $e) {
-                    return false;
-                }
-            }
-        }
-
-        return $panel;
     }
 
     /**

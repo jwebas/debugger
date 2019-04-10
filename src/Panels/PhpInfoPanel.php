@@ -6,19 +6,40 @@ namespace Jwebas\Debugger\Panels;
 
 use DOMDocument;
 use DOMElement;
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 
-class PhpInfoPanel extends AbstractPanel
+class PhpInfoPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Php Info';
+    public $id = 'phpInfo';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/php_info/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Php Info';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/php_info/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/php_info/panel.phtml';
 
     /**
      * @inheritDoc
@@ -45,6 +66,14 @@ class PhpInfoPanel extends AbstractPanel
         return [
             'dom' => $dom->saveHTML($body),
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return true;
     }
 
     /**

@@ -5,24 +5,50 @@ namespace Jwebas\Debugger\Panels;
 
 
 use Illuminate\Database\Capsule\Manager;
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
 
-class EloquentOrmPanel extends AbstractPanel
+class EloquentOrmPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Eloquent ORM';
+    public $id = 'eloquentOrm';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/eloquent_orm/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Eloquent ORM';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/eloquent_orm/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/eloquent_orm/panel.phtml';
+
+    /**
+     * @var string|array|null
+     */
+    protected $containerKey = 'database';
 
     /**
      * @return string
      */
-    protected function getTabData(): string
+    public function getTabData(): string
     {
         $data = $this->getData();
 
@@ -32,10 +58,18 @@ class EloquentOrmPanel extends AbstractPanel
     /**
      * @inheritDoc
      */
+    public function valid(): bool
+    {
+        return null !== $this->container && class_exists(Manager::class);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getData(): array
     {
         /** @var Manager $manager */
-        $manager = $this->container->get($this->getContainerKey());
+        $manager = $this->container->get($this->containerKey);
         $queryLog = $manager->getConnection()->getQueryLog();
         $time = $cnt = 0;
         $content = '';

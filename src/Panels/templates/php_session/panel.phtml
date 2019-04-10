@@ -1,50 +1,39 @@
 <?php declare(strict_types=1);
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
-
-/** @var $this AbstractPanel */
-/** @var string $panelTitle */
+/** @var \Jwebas\Debugger\Support\Panel $this */
 /** @var array $data */
 
 ?>
 
 <style class="tracy-debug">
-    .tracy-PhpSessionPanel table.tracy-table .e {
+    table.tracy-table.table-phpSession td.e {
         width : 160px;
     }
 
-    .tracy-PhpSessionPanel table.tracy-table .v {
+    table.tracy-table.table-phpSession td.v {
         max-width : 400px;
     }
 </style>
 
-<h1><?= $panelTitle ?></h1>
+<?php foreach ($data as $key => $datum): ?>
+    <span style="font-weight: bold;">
+        <?= $datum['title'] ?>
+    </span>
 
-<div class="tracy-inner tracy-PhpSessionPanel">
-    <div class="tracy-inner-container">
-        <?php foreach ($data as $key => $datum): ?>
-
-            <span style="font-weight: bold;">
-                <?= $datum['title'] ?>
-            </span>
-
-            <table class="tracy-table tracy-sortable tracy-table-<?= $key ?>">
-                <thead>
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($datum['values'] as $title => $value): ?>
-                    <tr>
-                        <td class="e"><?= $title ?></td>
-                        <td class="v"><?= $this->toHtml($value) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-
+    <table class="tracy-table tracy-sortable table-phpSession">
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($datum['values'] as $title => $value): ?>
+            <tr>
+                <td class="e"><?= $title ?></td>
+                <td class="v"><?= $this->toHtml($value) ?></td>
+            </tr>
         <?php endforeach; ?>
-    </div>
-</div>
+        </tbody>
+    </table>
+<?php endforeach; ?>

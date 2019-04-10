@@ -4,19 +4,41 @@
 namespace Jwebas\Debugger\Panels;
 
 
-use Jwebas\Debugger\Panels\Abstracts\AbstractPanel;
+use Jwebas\Debugger\Support\Panel;
+use Psr\Container\ContainerInterface;
 
-class PsrContainerPanel extends AbstractPanel
+class PsrContainerPanel extends Panel
 {
     /**
-     * @var string
+     * Panel id
+     *
+     * @var string|null
      */
-    protected $title = 'Container';
+    public $id = 'psrContainer';
 
     /**
+     * Bar title
+     *
      * @var string
      */
-    protected $template = __DIR__ . '/templates/psr_container/';
+    public $barTitle;
+
+    /**
+     * Panel title
+     *
+     * @var string
+     */
+    public $panelTitle = 'Psr Container';
+
+    /**
+     * @var string|null
+     */
+    public $iconTemplate = __DIR__ . '/templates/psr_container/icon.svg';
+
+    /**
+     * @var string|null
+     */
+    public $panelTemplate = __DIR__ . '/templates/psr_container/panel.phtml';
 
     /**
      * @inheritDoc
@@ -26,5 +48,13 @@ class PsrContainerPanel extends AbstractPanel
         return [
             'all' => $this->container,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function valid(): bool
+    {
+        return null !== $this->container && $this->container instanceof ContainerInterface;
     }
 }

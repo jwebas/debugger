@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection PhpFullyQualifiedNameUsageInspection */
+declare(strict_types=1);
 
 return [
     'settings' => [
@@ -30,7 +31,11 @@ return [
             'debug'        => true,
             'logDirectory' => __DIR__ . '/logs',
             'panels'       => [
-                'enabled' => 'all',
+                \Jwebas\Debugger\Panels\JwebasConfigPanel::class,
+                \Jwebas\Debugger\Panels\PsrContainerPanel::class,
+                \Jwebas\Debugger\Panels\EloquentOrmPanel::class,
+                \Jwebas\Debugger\Bundles\PhpBundle::class,
+                \Jwebas\Debugger\Bundles\SlimFrameworkBundle::class,
             ],
         ],
     ],

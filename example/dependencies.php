@@ -9,14 +9,17 @@ use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Twig\Profiler\Profile;
 
-// Config
+//Unset Slim phpErrorHandler and errorHandler
+unset($container['phpErrorHandler'], $container['errorHandler']);
+
+//Jwebas Config
 $container['config'] = static function (): Config {
     $config = include __DIR__ . '/config.php';
 
     return new Config($config);
 };
 
-// Illuminate database
+//Illuminate database
 $container['database'] = static function (ContainerInterface $c): Capsule {
     $capsule = new Capsule;
     $capsule->addConnection($c->get('config')->get('settings.database'));
@@ -28,7 +31,7 @@ $container['database'] = static function (ContainerInterface $c): Capsule {
 };
 $capsule = $container['database'];
 
-// Twig template engine
+//Twig template engine
 $container['twigProfile'] = static function () {
     return new Profile();
 };
