@@ -13,7 +13,7 @@ abstract class BasePanel implements IBarPanel
     /**
      * Panel id
      *
-     * @var string|null
+     * @var string
      */
     public $id;
 

@@ -21,7 +21,7 @@ class SymfonyFrameworkBundle extends Bundle
     /**
      * Panel id
      *
-     * @var string|null
+     * @var string
      */
     public $id = 'symfony';
 
