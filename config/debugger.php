@@ -21,7 +21,7 @@ return [
     | Allowed IP address to enable debugger
     | localhost === 127.0.0.1 or ::1
     |
-    | @var array
+    | @var array|null
     |
     */
 
