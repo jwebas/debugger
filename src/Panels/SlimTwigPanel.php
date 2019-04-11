@@ -5,6 +5,7 @@ namespace Jwebas\Debugger\Panels;
 
 
 use Jwebas\Debugger\Support\Panel;
+use Psr\Container\NotFoundExceptionInterface;
 use Slim\Views\Twig;
 use Twig\Profiler\Profile;
 
@@ -71,8 +72,18 @@ class SlimTwigPanel extends Panel
      */
     public function valid(): bool
     {
-        return null !== $this->container
-            && class_exists(Twig::class)
-            && class_exists(Profile::class);
+        if (null === $this->container || !class_exists(Twig::class) || !class_exists(Profile::class)) {
+            return false;
+        }
+
+        foreach ($this->containerKey as $key) {
+            try {
+                $this->container->get($key);
+            } catch (NotFoundExceptionInterface $e) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -6,6 +6,7 @@ namespace Jwebas\Debugger\Panels;
 
 use Illuminate\Database\Capsule\Manager;
 use Jwebas\Debugger\Support\Panel;
+use Psr\Container\NotFoundExceptionInterface;
 
 class EloquentOrmPanel extends Panel
 {
@@ -60,7 +61,17 @@ class EloquentOrmPanel extends Panel
      */
     public function valid(): bool
     {
-        return null !== $this->container && class_exists(Manager::class);
+        if (null === $this->container || !class_exists(Manager::class)) {
+            return false;
+        }
+
+        try {
+            $this->container->get($this->containerKey);
+        } catch (NotFoundExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Jwebas\Debugger\Panels;
 
 
 use Jwebas\Debugger\Support\Panel;
+use Psr\Container\NotFoundExceptionInterface;
 use Slim\Http\Request;
 
 class SlimRequestPanel extends Panel
@@ -84,6 +85,16 @@ class SlimRequestPanel extends Panel
      */
     public function valid(): bool
     {
-        return null !== $this->container && class_exists(Request::class);
+        if (null === $this->container || !class_exists(Request::class)) {
+            return false;
+        }
+
+        try {
+            $this->container->get($this->containerKey);
+        } catch (NotFoundExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 }

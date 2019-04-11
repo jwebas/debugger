@@ -6,6 +6,7 @@ namespace Jwebas\Debugger\Panels;
 
 use Jwebas\Config\Config;
 use Jwebas\Debugger\Support\Panel;
+use Psr\Container\NotFoundExceptionInterface;
 
 class JwebasConfigPanel extends Panel
 {
@@ -61,6 +62,16 @@ class JwebasConfigPanel extends Panel
      */
     public function valid(): bool
     {
-        return null !== $this->container && class_exists(Config::class);
+        if (null === $this->container || !class_exists(Config::class)) {
+            return false;
+        }
+
+        try {
+            $this->container->get($this->containerKey);
+        } catch (NotFoundExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 }
