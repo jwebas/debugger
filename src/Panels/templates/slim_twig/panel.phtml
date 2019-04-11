@@ -15,6 +15,25 @@
     }
 </style>
 
+<span style="font-weight: bold;">Paths</span>
+
+<table class="tracy-table tracy-sortable table-slimTwig">
+    <thead>
+    <tr>
+        <th>Namespace</th>
+        <th>Path</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($data['paths'] as $namespace => $path): ?>
+        <tr>
+            <td class="e"><?= $namespace ?></td>
+            <td class="v"><?= $this->toHtml($path) ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
 <span style="font-weight: bold;">Extensions</span>
 
 <table class="tracy-table tracy-sortable table-slimTwig">

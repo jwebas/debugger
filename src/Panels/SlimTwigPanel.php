@@ -7,6 +7,7 @@ namespace Jwebas\Debugger\Panels;
 use Jwebas\Debugger\Support\Panel;
 use Psr\Container\NotFoundExceptionInterface;
 use Slim\Views\Twig;
+use Twig\Loader\FilesystemLoader;
 use Twig\Profiler\Profile;
 
 class SlimTwigPanel extends Panel
@@ -55,12 +56,20 @@ class SlimTwigPanel extends Panel
         /** @var Twig $twig */
         $twig = $this->container->get($this->containerKey[0]);
 
+        /** @var FilesystemLoader $loader */
+        $loader = $twig->getLoader();
+        $paths = [];
+        foreach ($loader->getNamespaces() as $namespace) {
+            $paths[$namespace] = $loader->getPaths($namespace);
+        }
+
         /** @var Profile $twigProfile */
         $twigProfile = $this->container->get($this->containerKey[1]);
 
         return [
             'twigProfile' => $twigProfile,
             'time'        => sprintf('%.2f ms', $twigProfile->getDuration() * 1000),
+            'paths'       => $paths,
             'extensions'  => $twig->getEnvironment()->getExtensions(),
             'loader'      => $twig->getLoader(),
             'full'        => $twig,
