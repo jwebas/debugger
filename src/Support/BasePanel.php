@@ -87,15 +87,17 @@ abstract class BasePanel implements IBarPanel
      *
      * @param mixed $item
      * @param int   $truncate
+     * @param int   $depth
      * @param bool  $location
      *
      * @return string
      */
-    public function toHtml($item, $truncate = 100, $location = false): string
+    public function toHtml($item, $truncate = 100, $depth = 6, $location = false): string
     {
         $options = [
             Dumper::TRUNCATE => $truncate,
             Dumper::LOCATION => $location,
+            Dumper::DEPTH    => $depth,
         ];
 
         return Dumper::toHtml($item, $options);
