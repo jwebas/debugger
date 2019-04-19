@@ -10,53 +10,59 @@ use Slim\Views\TwigExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Profiler\Profile;
+use Slim\App;
 
-//Unset Slim phpErrorHandler and errorHandler
-unset($container['phpErrorHandler'], $container['errorHandler']);
+return static function (App $app) {
 
-//Jwebas Config
-$container['config'] = static function (): Config {
-    $config = include __DIR__ . '/config.php';
+    $container = $app->getContainer();
 
-    return new Config($config);
-};
+    //Unset Slim phpErrorHandler and errorHandler
+    unset($container['phpErrorHandler'], $container['errorHandler']);
 
-//Illuminate database
-$container['database'] = static function (ContainerInterface $c): Capsule {
-    $capsule = new Capsule;
-    $capsule->addConnection($c->get('config')->get('settings.database'));
-    $capsule->setAsGlobal();
-    $capsule->bootEloquent();
-    $capsule::connection()->enableQueryLog();
+    //Jwebas Config
+    $container['config'] = static function (): Config {
+        $config = include __DIR__ . '/config.php';
 
-    return $capsule;
-};
-$capsule = $container['database'];
+        return new Config($config);
+    };
 
-//Twig template engine
-$container['twigProfile'] = static function () {
-    return new Profile();
-};
+    //Illuminate database
+    $container['database'] = static function (ContainerInterface $c): Capsule {
+        $capsule = new Capsule;
+        $capsule->addConnection($c->get('config')->get('settings.database'));
+        $capsule->setAsGlobal();
+        $capsule->bootEloquent();
+        $capsule::connection()->enableQueryLog();
 
-$container['twig'] = static function (ContainerInterface $c): Twig {
+        return $capsule;
+    };
+    $capsule = $container['database'];
 
-    $settings = $c->get('settings')['view'];
+    //Twig template engine
+    $container['twigProfile'] = static function () {
+        return new Profile();
+    };
 
-    $view = new Twig($settings['template_path'], $settings['twig']);
+    $container['twig'] = static function (ContainerInterface $c): Twig {
 
-    $router = $c->get('router');
-    $uri = Uri::createFromEnvironment(new Environment($_SERVER));
-    $view->addExtension(new TwigExtension($router, $uri));
+        $settings = $c->get('settings')['view'];
 
-    return $view;
-};
+        $view = new Twig($settings['template_path'], $settings['twig']);
 
-//Symfony request
-$container['sfRequest'] = static function (): Request {
-    return Request::createFromGlobals();
-};
+        $router = $c->get('router');
+        $uri = Uri::createFromEnvironment(new Environment($_SERVER));
+        $view->addExtension(new TwigExtension($router, $uri));
 
-//Symfony request
-$container['sfResponse'] = static function (): Response {
-    return new Response();
+        return $view;
+    };
+
+    //Symfony request
+    $container['sfRequest'] = static function (): Request {
+        return Request::createFromGlobals();
+    };
+
+    //Symfony request
+    $container['sfResponse'] = static function (): Response {
+        return new Response();
+    };
 };

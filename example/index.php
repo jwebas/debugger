@@ -23,17 +23,17 @@ Debugger::run($config['settings']['debugger']);
 //Init Slim application
 $app = new App($config);
 
-//Get container from Slim application
-$container = $app->getContainer();
+// Set up dependencies
+$dependencies = require __DIR__ . '/dependencies.php';
+$dependencies($app);
 
-//Add container dependencies
-require __DIR__ . '/dependencies.php';
+// Register routes
+$routes = require __DIR__ . '/routes.php';
+$routes($app);
 
-//Add routes
-require __DIR__ . '/routes.php';
-
-//Add middlewares
-require __DIR__ . '/middlewares.php';
+// Register middlewares
+$middleware = require __DIR__ . '/middlewares.php';
+$middleware($app);
 
 //Enable Debugger panels
 //Debugger::renderPanels($container);
